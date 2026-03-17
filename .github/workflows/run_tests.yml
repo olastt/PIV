@@ -21,6 +21,15 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Debug env
+        run: |
+          python3 -c "
+          from dotenv import load_dotenv
+          import os
+          load_dotenv('.env')
+          print('TOKEN:', bool(os.getenv('X_TOKEN') or os.getenv('TOKEN') or os.getenv('X_REST_API_KEY')))
+          print('DOMAIN:', os.getenv('DOMAIN'))
+          "
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
       - name: Run tests
