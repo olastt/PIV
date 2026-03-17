@@ -2,11 +2,10 @@ name: Run Tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, main ]
   workflow_dispatch:
   schedule:
     - cron: '0 6 * * 1-5'
-
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
