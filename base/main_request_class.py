@@ -5,7 +5,9 @@ from base.attach_curl import attach_response_info
 from base.response import Response
 from settings import base_settings
 
-load_dotenv()
+# Загружаем .env из корня проекта (при запуске pytest из tests/users иначе не подхватится)
+_project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(_project_root, ".env"))
 
 
 class ApiClient:
@@ -23,7 +25,13 @@ class ApiClient:
         :param default_headers: Заголовки по умолчанию. Если не указаны, используются стандартные
         """
         self.base_url = (base_url or base_settings.vm_url).rstrip('/')
-        self.api_key = api_key or os.getenv("X_REST_API_KEY")
+        # Токен: параметр > X_REST_API_KEY > X_TOKEN > TOKEN (из .env)
+        self.api_key = (
+            api_key
+            or os.getenv("X_REST_API_KEY")
+            or os.getenv("X_TOKEN")
+            or os.getenv("TOKEN")
+        )
         self.errors = []
 
         # Базовые заголовки по умолчанию
@@ -35,9 +43,18 @@ class ApiClient:
 
         self.default_headers = default_headers.copy()
 
-        # Добавляем API ключ, если он есть
+        # Заголовки для mobilebackend.vetmanager.cloud (X-TOKEN, DOMAIN, X-MOBILE-APP, CLINIC-ID)
         if self.api_key:
-            self.default_headers["X-REST-API-KEY"] = self.api_key
+            self.default_headers["X-TOKEN"] = self.api_key
+        _domain = os.getenv("DOMAIN")
+        if _domain:
+            self.default_headers["DOMAIN"] = _domain
+        _mobile_app = os.getenv("X_MOBILE_APP")
+        if _mobile_app:
+            self.default_headers["X-MOBILE-APP"] = _mobile_app
+        _clinic_id = os.getenv("CLINIC_ID")
+        if _clinic_id is not None and str(_clinic_id).strip() != "":
+            self.default_headers["CLINIC-ID"] = str(_clinic_id).strip()
 
     def _get_headers(self, headers: dict = None) -> dict:
         """

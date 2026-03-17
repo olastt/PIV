@@ -7,12 +7,6 @@ from typing import Dict, Any, Optional
 
 import allure
 
-from src.schemas.error_models.error_responses import (
-    StandardErrorResponse,
-    ApiErrorResponse,
-    ValidationErrorResponse
-)
-
 
 class BaseValidator:
     """
