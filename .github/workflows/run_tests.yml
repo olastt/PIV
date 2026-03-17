@@ -57,30 +57,30 @@ jobs:
       - name: Deploy to Surge
         run: surge allure-report ${{ secrets.SURGE_DOMAIN }} --token ${{ secrets.SURGE_TOKEN }}
         continue-on-error: true
-      - name: Send Bitrix24 notification
-        continue-on-error: true
-        run: |
-          python3 - <<'EOF'
-          import os, urllib.request, urllib.parse
-          passed = os.environ.get('PASSED', '0')
-          failed = os.environ.get('FAILED', '0')
-          error = os.environ.get('ERROR', '0')
-          failed_tests = os.environ.get('FAILED_TESTS', '')
-          report_url = "https://${{ secrets.SURGE_DOMAIN }}"
-          webhook = "${{ secrets.BITRIX_WEBHOOK_URL }}"
-          chat_id = "${{ secrets.BITRIX_CHAT_ID }}"
-          failed_list = '\n'.join([t for t in failed_tests.split('|') if t.strip()])
-          message = (
-              f"VM Mobile - Автотесты API прогнаны!\n"
-              f"✅ Passed: {passed}\n"
-              f"❌ Failed: {failed}\n"
-              f"⚠️ Errors: {error}\n"
-          )
-          if failed_list:
-              message += f"\nУпавшие тесты:\n{failed_list}\n"
-          message += f"\n📊 Отчёт: {report_url}"
-          data = urllib.parse.urlencode({'DIALOG_ID': chat_id, 'MESSAGE': message}).encode()
-          req = urllib.request.Request(webhook + 'im.message.add', data=data)
-          resp = urllib.request.urlopen(req)
-          print(resp.read().decode())
+      # - name: Send Bitrix24 notification
+      #   continue-on-error: true
+      #   run: |
+      #     python3 - <<'EOF'
+      #     import os, urllib.request, urllib.parse
+      #     passed = os.environ.get('PASSED', '0')
+      #     failed = os.environ.get('FAILED', '0')
+      #     error = os.environ.get('ERROR', '0')
+      #     failed_tests = os.environ.get('FAILED_TESTS', '')
+      #     report_url = "https://${{ secrets.SURGE_DOMAIN }}"
+      #     webhook = "${{ secrets.BITRIX_WEBHOOK_URL }}"
+      #     chat_id = "${{ secrets.BITRIX_CHAT_ID }}"
+      #     failed_list = '\n'.join([t for t in failed_tests.split('|') if t.strip()])
+      #     message = (
+      #         f"VM Mobile - Автотесты API прогнаны!\n"
+      #         f"✅ Passed: {passed}\n"
+      #         f"❌ Failed: {failed}\n"
+      #         f"⚠️ Errors: {error}\n"
+      #     )
+      #     if failed_list:
+      #         message += f"\nУпавшие тесты:\n{failed_list}\n"
+      #     message += f"\n📊 Отчёт: {report_url}"
+      #     data = urllib.parse.urlencode({'DIALOG_ID': chat_id, 'MESSAGE': message}).encode()
+      #     req = urllib.request.Request(webhook + 'im.message.add', data=data)
+      #     resp = urllib.request.urlopen(req)
+      #     print(resp.read().decode())
           EOF
