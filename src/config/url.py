@@ -1,10 +1,10 @@
 class Url:
     # VM: основной API (все запросы кроме логина)
-    DOMAIN_VM_PROD = "https://mobilebackend.vetmanager.cloud"
-    # DOMAIN_VM_TEST = "https://mobilebackend-test.kube-dev.vetmanager.cloud"
+    # DOMAIN_VM_PROD = "https://mobilebackend.vetmanager.cloud"
+    DOMAIN_VM_TEST = "https://mobilebackend-test.kube-dev.vetmanager.cloud"
 
     # Логин идёт на отдельный хост; токен из ответа пишется в .env и используется для API выше
-    DOMAIN_VM_AUTH = "https://devolesya.vetmanager2.ru"
+    DOMAIN_VM_AUTH = "https://three.test.kube-dev.vetmanager.cloud/"
 
     # ==================== AUTH ====================
     AUTH_BY_LOGIN_AND_PASSWORD = "/token_auth.php"

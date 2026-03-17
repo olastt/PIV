@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PLATFORM = os.environ.get('PLATFORM', 'prod')
+PLATFORM = os.environ.get('PLATFORM', 'test')
 
 
 class BaseSettings:
@@ -14,7 +14,7 @@ class BaseSettings:
     @property
     def vm_url(self) -> str:
         """Базовый URL API. В CI можно задать VM_URL (например тестовый бэкенд без Cloudflare)."""
-        return os.getenv("VM_URL", "").strip() or Url.DOMAIN_VM_PROD
+        return os.getenv("VM_URL", "").strip() or Url.DOMAIN_VM_TEST
 
     @property
     def login(self) -> str:
