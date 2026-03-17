@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PLATFORM = os.environ.get('PLATFORM', 'test')
+PLATFORM = os.environ.get('PLATFORM', 'prod')
 
 
 class BaseSettings:
