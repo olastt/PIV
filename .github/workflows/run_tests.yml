@@ -34,6 +34,25 @@ jobs:
           print('X_MOBILE_APP:', os.getenv('X_MOBILE_APP'))
           print('CLINIC_ID:', os.getenv('CLINIC_ID'))
           "
+      - name: Test request
+        run: |
+          python3 -c "
+          import httpx
+          from dotenv import load_dotenv
+          import os
+          load_dotenv()
+          headers = {
+              'accept': 'application/json',
+              'Content-Type': 'application/json',
+              'X-TOKEN': os.getenv('X_TOKEN'),
+              'DOMAIN': os.getenv('DOMAIN'),
+              'X-MOBILE-APP': os.getenv('X_MOBILE_APP'),
+              'CLINIC-ID': str(os.getenv('CLINIC_ID')),
+          }
+          r = httpx.get('https://mobilebackend.vetmanager.cloud/api/v2/roles/1', headers=headers)
+          print('Status:', r.status_code)
+          print('CF-mitigated:', r.headers.get('cf-mitigated', 'нет'))
+          "
       - name: Run tests
         run: pytest tests/ --tb=no -q 2>&1 | tee pytest-output.txt
         continue-on-error: true
