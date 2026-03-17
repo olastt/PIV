@@ -3,3 +3,4 @@ pytest>=7.0
 python-dotenv>=1.0
 httpx>=0.27.0
 curlify2>=0.1.0
+MakeyIS==0.8
