@@ -34,12 +34,16 @@ class ApiClient:
         )
         self.errors = []
 
-        # Базовые заголовки по умолчанию
+        # Базовые заголовки по умолчанию (в т.ч. Client Hints — снижают риск 403 от Cloudflare в CI)
         if default_headers is None:
             default_headers = {
                 "accept": "application/json",
                 "Content-Type": "application/json",
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Sec-CH-UA": '"Chromium";v="120", "Google Chrome";v="120", "Not_A Brand";v="24"',
+                "Sec-CH-UA-Mobile": "?0",
+                "Sec-CH-UA-Platform": '"Windows"',
+                "Accept-Language": "ru-RU,ru;q=0.9,en;q=0.8",
             }
 
         self.default_headers = default_headers.copy()

@@ -29,11 +29,14 @@ jobs:
           from dotenv import load_dotenv
           import os
           load_dotenv()
+          print('VM_URL (API base):', os.getenv('VM_URL') or '(default prod)')
           print('X_TOKEN:', bool(os.getenv('X_TOKEN')))
           print('DOMAIN:', os.getenv('DOMAIN'))
           print('X_MOBILE_APP:', os.getenv('X_MOBILE_APP'))
           print('CLINIC_ID:', os.getenv('CLINIC_ID'))
           "
+          # Если тесты падают с 403: mobilebackend за Cloudflare, CI часто блокируется.
+          # Задайте VM_URL на тестовый бэкенд (без challenge) в Secrets/Variables.
       - name: Run tests
         run: pytest tests/ --alluredir=allure-results -q 2>&1 | tee pytest-output.txt
         continue-on-error: true

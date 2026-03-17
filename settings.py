@@ -13,7 +13,8 @@ class BaseSettings:
 
     @property
     def vm_url(self) -> str:
-        return f'{Url.DOMAIN_VM_PROD}'
+        """Базовый URL API. В CI можно задать VM_URL (например тестовый бэкенд без Cloudflare)."""
+        return os.getenv("VM_URL", "").strip() or Url.DOMAIN_VM_PROD
 
     @property
     def login(self) -> str:
