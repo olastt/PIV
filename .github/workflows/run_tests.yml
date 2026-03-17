@@ -23,36 +23,6 @@ jobs:
         run: pip install -r requirements.txt
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
-      - name: Debug env vars
-        run: |
-          python3 -c "
-          from dotenv import load_dotenv
-          import os
-          load_dotenv()
-          print('X_TOKEN:', bool(os.getenv('X_TOKEN')))
-          print('DOMAIN:', os.getenv('DOMAIN'))
-          print('X_MOBILE_APP:', os.getenv('X_MOBILE_APP'))
-          print('CLINIC_ID:', os.getenv('CLINIC_ID'))
-          "
-      - name: Test request
-        run: |
-          python3 -c "
-          import httpx
-          from dotenv import load_dotenv
-          import os
-          load_dotenv()
-          headers = {
-              'accept': 'application/json',
-              'Content-Type': 'application/json',
-              'X-TOKEN': os.getenv('X_TOKEN'),
-              'DOMAIN': os.getenv('DOMAIN'),
-              'X-MOBILE-APP': os.getenv('X_MOBILE_APP'),
-              'CLINIC-ID': str(os.getenv('CLINIC_ID')),
-          }
-          r = httpx.get('https://mobilebackend.vetmanager.cloud/api/v2/roles/1', headers=headers)
-          print('Status:', r.status_code)
-          print('CF-mitigated:', r.headers.get('cf-mitigated', 'нет'))
-          "
       - name: Run tests
         run: pytest tests/ --tb=no -q 2>&1 | tee pytest-output.txt
         continue-on-error: true
@@ -76,30 +46,30 @@ jobs:
       - name: Deploy to Surge
         run: surge allure-report ${{ secrets.SURGE_DOMAIN }} --token ${{ secrets.SURGE_TOKEN }}
         continue-on-error: true
-      # - name: Send Bitrix24 notification
-      #   continue-on-error: true
-      #   run: |
-      #     python3 - <<'EOF'
-      #     import os, urllib.request, urllib.parse
-      #     passed = os.environ.get('PASSED', '0')
-      #     failed = os.environ.get('FAILED', '0')
-      #     error = os.environ.get('ERROR', '0')
-      #     failed_tests = os.environ.get('FAILED_TESTS', '')
-      #     report_url = "https://${{ secrets.SURGE_DOMAIN }}"
-      #     webhook = "${{ secrets.BITRIX_WEBHOOK_URL }}"
-      #     chat_id = "${{ secrets.BITRIX_CHAT_ID }}"
-      #     failed_list = '\n'.join([t for t in failed_tests.split('|') if t.strip()])
-      #     message = (
-      #         f"VM Mobile - Автотесты API прогнаны!\n"
-      #         f"✅ Passed: {passed}\n"
-      #         f"❌ Failed: {failed}\n"
-      #         f"⚠️ Errors: {error}\n"
-      #     )
-      #     if failed_list:
-      #         message += f"\nУпавшие тесты:\n{failed_list}\n"
-      #     message += f"\n📊 Отчёт: {report_url}"
-      #     data = urllib.parse.urlencode({'DIALOG_ID': chat_id, 'MESSAGE': message}).encode()
-      #     req = urllib.request.Request(webhook + 'im.message.add', data=data)
-      #     resp = urllib.request.urlopen(req)
-      #     print(resp.read().decode())
-      #     EOF
+      - name: Send Bitrix24 notification
+        continue-on-error: true
+        run: |
+          python3 - <<'EOF'
+          import os, urllib.request, urllib.parse
+          passed = os.environ.get('PASSED', '0')
+          failed = os.environ.get('FAILED', '0')
+          error = os.environ.get('ERROR', '0')
+          failed_tests = os.environ.get('FAILED_TESTS', '')
+          report_url = "https://${{ secrets.SURGE_DOMAIN }}"
+          webhook = "${{ secrets.BITRIX_WEBHOOK_URL }}"
+          chat_id = "${{ secrets.BITRIX_CHAT_ID }}"
+          failed_list = '\n'.join([t for t in failed_tests.split('|') if t.strip()])
+          message = (
+              f"VM Mobile - Автотесты API прогнаны!\n"
+              f"✅ Passed: {passed}\n"
+              f"❌ Failed: {failed}\n"
+              f"⚠️ Errors: {error}\n"
+          )
+          if failed_list:
+              message += f"\nУпавшие тесты:\n{failed_list}\n"
+          message += f"\n📊 Отчёт: {report_url}"
+          data = urllib.parse.urlencode({'DIALOG_ID': chat_id, 'MESSAGE': message}).encode()
+          req = urllib.request.Request(webhook + 'im.message.add', data=data)
+          resp = urllib.request.urlopen(req)
+          print(resp.read().decode())
+          EOF
