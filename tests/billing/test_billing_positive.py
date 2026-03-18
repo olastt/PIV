@@ -10,3 +10,11 @@ class TestBillingPositive:
     @Test(run_test=True, group_name="Биллинг", log=True)
     def test_get_billing_url(self, billing_start):
         billing_start.get_billing_url()
+
+    @pytest.mark.positive
+    @allure.epic('Тариф')
+    @allure.feature('GET /api/v2/tariff')
+    @allure.title('Получение данных по тарифу')
+    @Test(run_test=True, group_name="Тариф", log=True)
+    def test_get_billing_url(self, billing_start):
+        billing_start.get_billing_tariff()

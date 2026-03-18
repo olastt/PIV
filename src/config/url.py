@@ -16,7 +16,7 @@ class Url:
     GET_USER_SETTINGS_PAYMENT = "/api/v2/users/{user_id}/settings/payment"
     GET_USER_STORES = "/api/v2/users/{user_id}/stores"
     GET_USER_SCHEDULES = "/api/v2/users/{user_id}/schedules"
-    GET_USER_ALLOWED_CLINICS = "/api/v2/users/{user_id}/allowedclinics"
+    GET_USER_ALLOWED_CLINICS = "/api/v1/users/{user_id}/allowedclinics"
     POST_USER_LOGOUT = "/api/v2/users/{user_id}/logout"
     GET_DOCTORS = "/api/v2/users/doctors"
 
@@ -30,11 +30,9 @@ class Url:
     # ==================== CASSA ====================
     GET_CASSA_BY_USER = "/api/v2/cassa/{user_id}"
 
-    # ==================== TARIFF ====================
-    GET_TARIFF = "/api/v2/tariff"
-
     # ==================== BILLING ====================
     GET_BILLING_URL = "/api/v2/billingurl"
+    GET_TARIFF = "/api/v2/tariff"
 
     # ==================== ROLES ====================
     GET_ROLE_BY_ID = "/api/v2/roles/{id_role}"
@@ -44,6 +42,7 @@ class Url:
     GET_HOSPITAL_BLOCKS = "/api/v2/hospital/blocks"
     GET_HOSPITAL_LIST_STATUSES = "/api/v2/hospital/liststatuses"
     GET_HOSPITAL_BY_ID = "/api/v2/hospital/{recordId}"
+    PATCH_HOSPITAL_BY_ID = "/api/v2/hospital/{recordId}"
 
     # ==================== CLIENTS ====================
     GET_CLIENT_BY_ID = "/api/v2/clients/{client_id}"
@@ -51,7 +50,13 @@ class Url:
     GET_CLIENTS_SEARCH = "/api/v2/clients/search/"
     POST_CLIENTS = "/api/v2/clients"
     GET_CLIENT_PETS = "/api/v2/clients/{client_id}/pets"
+    GET_CLIENT_PET_BY_ID = "/api/v2/clients/{client_id}/pets/{pet_id}"
     GET_CLIENT_INVOICES = "/api/v2/clients/{client_id}/invoices"
+    GET_CLIENT_INVOICE_PRODUCTS = "/api/v2/clients/{client_id}/invoices/{invoice_id}/products"
+    POST_CLIENT_PAYMENTS = "/api/v2/clients/{client_id}/payments"
+    GET_CLIENT_MATCH = "/api/v2/clients/{client_id}/match"
+    GET_CLIENT_CONTACTS = "/api/v2/clients/{client_id}/contacts"
+    POST_CLIENTS_COMBINE = "/api/v2/clients/combine"
 
     # ==================== PETS ====================
     GET_PETS_TYPES = "/api/v2/pets/types"
@@ -68,23 +73,33 @@ class Url:
     # ==================== ADMISSION ====================
     GET_ADMISSION_BY_ID = "/api/v2/users/admission/{admission_id}"
     GET_ADMISSIONS_BY_USER = "/api/v2/users/{user_id}/admission"
+    POST_CREATE_ADMISSION = "/api/v2/users/{user_id}/admission"
 
     # ==================== CALLS ====================
     GET_USER_CALLS = "/api/v2/users/{user_id}/calls"
     GET_CALLS_SEARCH = "/api/v2/calls/search"
+    POST_CREATE_USER_CALL = "/api/v2/users/{user_id}/calls"
+    PUT_UPDATE_USER_CALL = "/api/v2/users/{user_id}/calls/{call_id}"
+    GET_USER_CALL_BY_ID = "/api/v2/users/{user_id}/calls/{call_id}"
 
     # ==================== COMBOMANUALS ====================
     GET_COMBOMANUALS_BY_ID = "/api/v2/combomanuals/{combomanuals_id}"
     GET_VACCINATION_TYPES = "/api/v2/combomanuals/vaccinationstypes"
     GET_REASONS_OF_VISIT = "/api/v2/combomanuals/reasonsofvisit"
+    GET_RESULT_OF_VISIT = "/api/v2/combomanuals/resultofvisit"
     GET_CITIES = "/api/v2/combomanuals/cities"
     GET_TYPES_CITIES = "/api/v2/combomanuals/typescities"
     GET_STREETS_BY_CITY = "/api/v2/combomanuals/{city_id}/streets"
     GET_TYPES_STREETS = "/api/v2/combomanuals/typesstreets"
+    POST_STREETS = "/api/v2/combomanuals/streets"
+    POST_CITIES = "/api/v2/combomanuals/cities"
 
     # ==================== DIAGNOSES ====================
     GET_DIAGNOSES = "/api/v2/diagnoses"
     GET_DIAGNOS_BY_ID = "/api/v2/diagnoses/{diagnos_id}"
+    POST_DIAGNOSES = "/api/v2/diagnoses"
+    PATCH_DIAGNOS = "/api/v2/diagnoses/{diagnos_id}"
+    DELETE_DIAGNOS = "/api/v2/diagnoses/{diagnos_id}"
 
     # ==================== MEDICALCARDS ====================
     GET_DIAGNOSES_FOR_MEDICALCARDS = "/api/v2/clients/medicalcards/diagnoses"

@@ -21,7 +21,12 @@ class HospitalMethods(ApiClient):
     def get_hospital_list_statuses(self, params: dict = None):
         return self.get(Url.GET_HOSPITAL_LIST_STATUSES, params=params)
 
-    @allure.step("GET /api/v2/hospital/{recordId} - Запись стационара по ID")
+    @allure.step("GET /api/v2/hospital/{{recordId}} - Запись стационара по ID")
     def get_hospital_by_id(self, record_id: int, params: dict = None):
         endpoint = Url.GET_HOSPITAL_BY_ID.replace("{recordId}", str(record_id))
         return self.get(endpoint, params=params)
+
+    @allure.step("PATCH /api/v2/hospital/{{recordId}} - Обновление записи стационара (UpdateHospitalByRecordId)")
+    def patch_hospital_by_id(self, record_id: int, json_data: dict):
+        endpoint = Url.PATCH_HOSPITAL_BY_ID.replace("{recordId}", str(record_id))
+        return self.patch(endpoint, json_data=json_data)

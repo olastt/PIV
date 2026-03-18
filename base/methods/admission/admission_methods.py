@@ -18,3 +18,8 @@ class AdmissionMethods(ApiClient):
     def get_admissions_by_user(self, user_id: int, params: dict = None):
         endpoint = Url.GET_ADMISSIONS_BY_USER.replace("{user_id}", str(user_id))
         return self.get(endpoint, params=params)
+
+    @allure.step("POST /api/v2/users/{user_id}/admission - Создание приёма")
+    def create_admission(self, user_id: int, json_data: dict):
+        endpoint = Url.POST_CREATE_ADMISSION.replace("{user_id}", str(user_id))
+        return self.post(endpoint, json_data=json_data)

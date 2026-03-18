@@ -1,4 +1,3 @@
-# Тесты по Swagger: Clients
 import allure
 import pytest
 from Library.MakeyIS import Test
@@ -11,7 +10,7 @@ class TestClientsPositive:
     @allure.title('Получение информации о клиенте')
     @Test(run_test=True, group_name="Клиенты", log=True)
     def test_get_client_by_id(self, clients_start):
-        clients_start.get_client_by_id(client_id=1)
+        clients_start.get_client_by_id()
 
     @pytest.mark.positive
     @allure.epic('Клиенты')
@@ -19,7 +18,7 @@ class TestClientsPositive:
     @allure.title("Поиск по базе клиентов")
     @Test(run_test=True, group_name="Клиенты", log=True)
     def test_get_clients_search(self, clients_start):
-        clients_start.get_clients_search(search_query="тест", page_number=1, page_size=20)
+        clients_start.get_clients_search()
 
     @pytest.mark.positive
     @allure.epic('Клиенты')
@@ -27,12 +26,40 @@ class TestClientsPositive:
     @allure.title("Получение информации о питомцах клиента")
     @Test(run_test=True, group_name="Клиенты", log=True)
     def test_get_client_pets(self, clients_start):
-        clients_start.get_client_pets(client_id=1)
+        clients_start.get_client_pets()
 
     @pytest.mark.positive
     @allure.epic('Клиенты')
-    @allure.feature('GET /api/v2/clients/{client_id}/invoices')
-    @allure.title("Получение информации о счетах клиента")
-    @Test(run_test=True, group_name="Клиенты", log=True)
-    def test_get_client_invoices(self, clients_start):
-        clients_start.get_client_invoices(client_id=1)
+    @allure.feature('GET /api/v2/clients/{client_id}/match')
+    @allure.title('Сопоставление клиента (ClientsMatch)')
+    def test_clients_match(self, clients_start):
+        clients_start.get_client_match()
+
+    @pytest.mark.positive
+    @allure.epic('Клиенты')
+    @allure.feature('GET /api/v2/clients/{client_id}/contacts')
+    @allure.title('Контакты клиента (ContactsInfoByClient)')
+    def test_contacts_info_by_client(self, clients_start):
+        clients_start.get_client_contacts()
+
+    @pytest.mark.positive
+    @allure.epic('Клиенты')
+    @allure.feature('GET /api/v2/clients/{client_id}/pets/{pet_id}')
+    @allure.title('Питомец клиента по ID (PetInfoByClient)')
+    def test_pet_info_by_client(self, clients_start):
+        clients_start.get_client_pet_by_id()
+
+    # @pytest.mark.positive
+    # @allure.epic('Клиенты')
+    # @allure.feature('POST /api/v2/clients/combine')
+    # @allure.title('Объединение клиентов (combine / combineClientData)')
+    # def test_clients_combine(self, clients_start):
+    #     clients_start.post_clients_combine()
+
+    @pytest.mark.positive
+    @allure.epic('Клиенты')
+    @allure.feature('POST /api/v2/clients')
+    @allure.title('Создание клиента (createClient)')
+    def test_create_client(self, clients_start):
+        clients_start.post_client()
+

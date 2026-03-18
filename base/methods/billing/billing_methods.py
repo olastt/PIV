@@ -10,5 +10,9 @@ class BillingMethods(ApiClient):
         super().__init__()
 
     @allure.step("GET /api/v2/billingurl - Ссылка на биллинг")
-    def get_billing_url(self, params: dict = None):
-        return self.get(Url.GET_BILLING_URL, params=params)
+    def get_billing_url(self):
+        return self.get(Url.GET_BILLING_URL)
+
+    @allure.step("GET /api/v2/tariff - Получение данных по тарифу")
+    def get_billing_url(self):
+        return self.get(Url.GET_TARIFF)

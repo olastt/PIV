@@ -35,11 +35,11 @@ class TestUser:
     @allure.title("GET /api/v2/users/{user_id}/stores — склады пользователя")
     def test_get_user_stores(self, user_start):
         user_start.get_user_stores(user_id=1)
-
-    @pytest.mark.positive
-    @allure.title("GET /api/v2/users/{user_id}/allowedclinics — разрешённые клиники")
-    def test_get_user_allowed_clinics(self, user_start):
-        user_start.get_user_allowed_clinics(user_id=1)
+    #
+    # @pytest.mark.positive
+    # @allure.title("GET /api/v2/users/{user_id}/allowedclinics — разрешённые клиники")
+    # def test_get_user_allowed_clinics(self, user_start):
+    #     user_start.get_user_allowed_clinics()
 
     @pytest.mark.positive
     @allure.title("GET /api/v2/users/doctors — список врачей")

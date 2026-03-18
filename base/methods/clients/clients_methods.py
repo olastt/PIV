@@ -32,7 +32,25 @@ class ClientsMethods(ApiClient):
         endpoint = Url.GET_CLIENT_PETS.replace("{client_id}", str(client_id))
         return self.get(endpoint, params=params)
 
-    @allure.step("GET /api/v2/clients/{client_id}/invoices - Счета клиента")
-    def get_client_invoices(self, client_id: int):
-        endpoint = Url.GET_CLIENT_INVOICES.replace("{client_id}", str(client_id))
-        return self.get(endpoint)
+    @allure.step("GET /api/v2/clients/{client_id}/match - Сопоставление клиента (ClientsMatch)")
+    def get_client_match(self, client_id: int, params: dict = None):
+        endpoint = Url.GET_CLIENT_MATCH.replace("{client_id}", str(client_id))
+        return self.get(endpoint, params=params)
+
+    @allure.step("GET /api/v2/clients/{client_id}/contacts - Контакты клиента (ContactsInfoByClient)")
+    def get_client_contacts(self, client_id: int, params: dict = None):
+        endpoint = Url.GET_CLIENT_CONTACTS.replace("{client_id}", str(client_id))
+        return self.get(endpoint, params=params)
+
+    @allure.step("GET /api/v2/clients/{client_id}/pets/{pet_id} - Питомец клиента по ID (PetInfoByClient)")
+    def get_client_pet_by_id(self, client_id: int, pet_id: int, params: dict = None):
+        endpoint = (
+            Url.GET_CLIENT_PET_BY_ID.replace("{client_id}", str(client_id)).replace("{pet_id}", str(pet_id))
+        )
+        return self.get(endpoint, params=params)
+
+    @allure.step("POST /api/v2/clients/combine - Объединение клиентов")
+    def post_clients_combine(self, json_data: dict):
+        return self.post(Url.POST_CLIENTS_COMBINE, json_data=json_data)
+
+

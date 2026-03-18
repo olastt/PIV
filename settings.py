@@ -36,5 +36,17 @@ class BaseSettings:
     def x_rest_api_key(self) -> str:
         return os.getenv('X_REST_API_KEY', '')
 
+    @property
+    def faker_locales(self):
+        """Локаль для Faker (строка или список). По умолчанию ru_RU."""
+        val = os.getenv('FAKER_LOCALES', 'ru_RU')
+        if isinstance(val, str) and val:
+            return [v.strip() for v in val.split(',')] if ',' in val else val
+        return ['ru_RU']
+
+    @property
+    def user_password(self) -> str:
+        return os.getenv('USER_PASSWORD', os.getenv('PASSWORD', ''))
+
 
 base_settings = BaseSettings()

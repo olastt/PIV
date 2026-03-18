@@ -10,4 +10,4 @@ class TestCassaPositive:
     @allure.title('Получение списка касс для пользователя')
     @Test(run_test=True, group_name="Касса", log=True)
     def test_get_cassa_by_user(self, cassa_start):
-        cassa_start.get_cassa_by_user(user_id=1)
+        cassa_start.get_cassa_by_user()

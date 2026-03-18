@@ -22,6 +22,10 @@ class CombomanualsMethods(ApiClient):
     def get_reasons_of_visit(self, params: dict = None):
         return self.get(Url.GET_REASONS_OF_VISIT, params=params)
 
+    @allure.step("GET /api/v2/combomanuals/resultofvisit - Результаты визита (ResultOfVisitData)")
+    def get_result_of_visit(self, params: dict = None):
+        return self.get(Url.GET_RESULT_OF_VISIT, params=params)
+
     @allure.step("GET /api/v2/combomanuals/cities - Список городов")
     def get_cities(self, params: dict = None):
         return self.get(Url.GET_CITIES, params=params)
@@ -38,3 +42,11 @@ class CombomanualsMethods(ApiClient):
     @allure.step("GET /api/v2/combomanuals/typesstreets - Типы улиц")
     def get_types_streets(self, params: dict = None):
         return self.get(Url.GET_TYPES_STREETS, params=params)
+
+    @allure.step("POST /api/v2/combomanuals/streets - Создание улицы (createStreet)")
+    def post_street(self, json_data: dict):
+        return self.post(Url.POST_STREETS, json_data=json_data)
+
+    @allure.step("POST /api/v2/combomanuals/cities - Создание города (createCity)")
+    def post_city(self, json_data: dict):
+        return self.post(Url.POST_CITIES, json_data=json_data)

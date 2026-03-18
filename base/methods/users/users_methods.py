@@ -39,7 +39,7 @@ class UserMethods(ApiClient):
         endpoint = Url.GET_USER_SCHEDULES.replace("{user_id}", str(user_id))
         return self.get(endpoint, params=params)
 
-    @allure.step("GET /api/v2/users/{user_id}/allowedclinics - Разрешённые клиники")
+    @allure.step("GET /api/v1/users/{user_id}/allowedclinics - Разрешённые клиники")
     def get_user_allowed_clinics(self, user_id: int):
         endpoint = Url.GET_USER_ALLOWED_CLINICS.replace("{user_id}", str(user_id))
         return self.get(endpoint)

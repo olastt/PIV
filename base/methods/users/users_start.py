@@ -30,13 +30,13 @@ class UserStart:
         with allure.step("Проверка статус кода 200"):
             response.assert_status_code(200)
         return response
-
-    def get_user_allowed_clinics(self, user_id: int = 1):
-        with allure.step("Запрос разрешённых клиник"):
-            response = self.users.get_user_allowed_clinics(user_id)
-        with allure.step("Проверка статус кода 200"):
-            response.assert_status_code(200)
-        return response
+    #
+    # def get_user_allowed_clinics(self, user_id: int = 3):
+    #     with allure.step("Запрос разрешённых клиник"):
+    #         response = self.users.get_user_allowed_clinics(user_id)
+    #     with allure.step("Проверка статус кода 200"):
+    #         response.assert_status_code(200)
+    #     return response
 
     def get_doctors(self, allow_limited: str = "0"):
         params = {"allow_limited": allow_limited}

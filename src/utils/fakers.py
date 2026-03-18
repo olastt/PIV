@@ -1,14 +1,11 @@
 import datetime
-
-import faker.providers.lorem
-from faker import Faker
-from faker.providers import company
-from faker.providers.lorem import Provider
-from settings import base_settings
-from random import choice, randint, sample
+from random import choice, randint
 from string import ascii_letters, digits
 
+from faker import Faker
+from faker.providers import company
 
+from settings import base_settings
 
 fake_locales = base_settings.faker_locales
 
@@ -167,6 +164,9 @@ def random_regions_list():
 
 def random_city():
     return fake.city()
+
+def random_street():
+    return fake.street_title()
 
 
 def random_domain(protocol=True):
