@@ -23,6 +23,10 @@ class CommonMethods(ApiClient):
     def get_properties(self, params: dict = None):
         return self.get(Url.GET_PROPERTIES, params=params)
 
+    @allure.step("GET /api/v2/redis/clear - Очистка Redis (служебный)")
+    def get_redis_clear(self, params: dict = None):
+        return self.get(Url.GET_REDIS_CLEAR, params=params)
+
     # ==================== Cassa ====================
     @allure.step("GET /api/v2/cassa/{user_id} - Кассы пользователя")
     def get_cassa_by_user(self, user_id: int):

@@ -6,7 +6,7 @@ from Library.MakeyIS import Test
 class TestClinicsPositive:
     @pytest.mark.positive
     @allure.epic('Клиники')
-    @allure.feature('GET /api/v2/clinics — список клиник')
+    @allure.feature('GET /api/v2/clinics')
     @allure.title('Получение всех клиник')
     @Test(run_test=True, group_name="Клиники", log=True)
     def test_get_clinics(self, clinic_start):
@@ -14,7 +14,7 @@ class TestClinicsPositive:
 
     @pytest.mark.positive
     @allure.epic('Клиники')
-    @allure.feature('GET /api/v2/properties — настройки клиники')
+    @allure.feature('GET /api/v2/properties')
     @allure.title('Получение настроек клиники')
     @Test(run_test=True, group_name="Клиники", log=True)
     def test_get_clinic_properties(self, clinic_start):

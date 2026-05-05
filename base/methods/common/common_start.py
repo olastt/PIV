@@ -112,3 +112,10 @@ class CommonStart:
         with allure.step("Проверка статус кода 200"):
             response.assert_status_code(200)
         return response
+
+    # def get_redis_clear(self, params=None):
+    #     with allure.step("GET /api/v2/redis/clear — очистка Redis"):
+    #         response = self.common.get_redis_clear(params=params)
+    #     with allure.step("Проверка статус кода 200"):
+    #         response.assert_status_code(200)
+    #     return response

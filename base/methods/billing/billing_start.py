@@ -16,8 +16,8 @@ class BillingStart:
         return response
 
     def get_billing_tariff(self):
-        with allure.step("Запрос ссылки на биллинг"):
-            response = self.billing.get_billing_url()
+        with allure.step("Запрос тарифа (GET /api/v2/tariff)"):
+            response = self.billing.get_tariff()
         with allure.step("Проверка статус кода 200"):
             response.assert_status_code(200)
         return response

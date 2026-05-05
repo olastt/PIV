@@ -1,3 +1,5 @@
+import os
+
 import allure
 from base.methods.clients.clients_methods import ClientsMethods
 
@@ -51,8 +53,14 @@ class ClientsStart:
         return response
 
     def patch_client(self, client_id=1, json_data: dict = None):
+        if json_data is None:
+            json_data = {
+                "client_data": {
+                    "note": "pytest patch client",
+                }
+            }
         with allure.step("Обновление клиента"):
-            response = self.clients.patch_client(client_id, json_data or {})
+            response = self.clients.patch_client(client_id, json_data)
         with allure.step("Проверка статус кода 200"):
             response.assert_status_code(200)
         return response
@@ -86,7 +94,9 @@ class ClientsStart:
             response.assert_status_code(200)
         return response
 
-    # def post_clients_combine(self, client_id_source=90, client_id_target=6, pet_id_target=0):
+    # def post_clients_combine(self, client_id_source=None, client_id_target=None, pet_id_target=0):
+    #     client_id_source = client_id_source or int(os.getenv("COMBINE_CLIENT_SOURCE_ID", "2"))
+    #     client_id_target = client_id_target or int(os.getenv("COMBINE_CLIENT_TARGET_ID", "1"))
     #     json_data = {
     #         "combine_data": {
     #             "client_id_source": client_id_source,
@@ -97,5 +107,5 @@ class ClientsStart:
     #     with allure.step("Объединение клиентов (combine)"):
     #         response = self.clients.post_clients_combine(json_data)
     #     with allure.step("Проверка статус кода"):
-    #         response.assert_status_code(200)
+    #         response.assert_status_code([200, 201, 422])
     #     return response

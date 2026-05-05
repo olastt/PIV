@@ -27,3 +27,12 @@ class InvoiceMethods(ApiClient):
     def post_client_payments(self, client_id: int, json_data: dict):
         endpoint = Url.POST_CLIENT_PAYMENTS.replace("{client_id}", str(client_id))
         return self.post(endpoint, json_data=json_data)
+
+    @allure.step("POST /api/v2/clients/{client_id}/invoices — создание счёта (form-urlencoded)")
+    def post_client_invoice(self, client_id: int, data: dict):
+        endpoint = Url.POST_CLIENT_INVOICES.replace("{client_id}", str(client_id))
+        return self.post(
+            endpoint,
+            data=data,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )

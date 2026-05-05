@@ -16,5 +16,5 @@ class TestBillingPositive:
     @allure.feature('GET /api/v2/tariff')
     @allure.title('Получение данных по тарифу')
     @Test(run_test=True, group_name="Тариф", log=True)
-    def test_get_billing_url(self, billing_start):
+    def test_get_tariff(self, billing_start):
         billing_start.get_billing_tariff()

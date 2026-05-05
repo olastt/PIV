@@ -64,20 +64,23 @@ class TestCombomanualsPositive:
     @pytest.mark.positive
     @allure.epic('Combomanuals')
     @allure.feature('GET /api/v2/combomanuals/resultofvisit')
-    @allure.title('Результаты визита (ResultOfVisitData)')
+    @allure.title('Результаты визита')
+    @Test(run_test=True, group_name="Combomanuals", log=True)
     def test_get_result_of_visit(self, combomanuals_start):
         combomanuals_start.get_result_of_visit()
 
     @pytest.mark.positive
     @allure.epic('Combomanuals')
     @allure.feature('POST /api/v2/combomanuals/streets')
-    @allure.title('Создание улицы (createStreet)')
+    @allure.title('Создание улицы')
+    @Test(run_test=True, group_name="Combomanuals", log=True)
     def test_create_street(self, combomanuals_start):
         combomanuals_start.post_street()
 
     @pytest.mark.positive
     @allure.epic('Combomanuals')
     @allure.feature('POST /api/v2/combomanuals/cities')
-    @allure.title('Создание города (createCity)')
+    @allure.title('Создание города')
+    @Test(run_test=True, group_name="Combomanuals", log=True)
     def test_create_city(self, combomanuals_start):
         combomanuals_start.post_city()

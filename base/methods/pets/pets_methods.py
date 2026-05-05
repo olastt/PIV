@@ -4,7 +4,7 @@ from src.config.url import Url
 
 
 class PetsMethods(ApiClient):
-    """Методы для питомцев и справочников (Pets, Types, Genders, Breeds по Swagger)"""
+    """Методы для питомцев (Pets) и POST/PATCH питомца клиента."""
 
     def __init__(self):
         super().__init__()
@@ -13,7 +13,7 @@ class PetsMethods(ApiClient):
     def get_pets_types(self, params: dict = None):
         return self.get(Url.GET_PETS_TYPES, params=params)
 
-    @allure.step("GET /api/v2/pets/genders - Пол питомцев")
+    @allure.step("GET /api/v2/pets/genders - Полы")
     def get_pets_genders(self, params: dict = None):
         return self.get(Url.GET_PETS_GENDERS, params=params)
 
@@ -22,11 +22,25 @@ class PetsMethods(ApiClient):
         endpoint = Url.GET_BREEDS_BY_TYPE.replace("{type_id}", str(type_id))
         return self.get(endpoint)
 
-    @allure.step("GET /api/v2/pets/breeds - Все породы")
+    @allure.step("GET /api/v2/pets/breeds - Породы")
     def get_pets_breeds(self, params: dict = None):
         return self.get(Url.GET_PETS_BREEDS, params=params)
 
-    @allure.step("GET /api/v2/clients/{client_id}/pets/{pet_id} - Питомец по ID")
+    @allure.step("GET /api/v2/clients/{client_id}/pets/{pet_id} - Питомец клиента")
     def get_pet_by_client(self, client_id: int, pet_id: int):
-        endpoint = Url.GET_PET_BY_CLIENT.replace("{client_id}", str(client_id)).replace("{pet_id}", str(pet_id))
+        endpoint = (
+            Url.GET_PET_BY_CLIENT.replace("{client_id}", str(client_id)).replace("{pet_id}", str(pet_id))
+        )
         return self.get(endpoint)
+
+    @allure.step("POST /api/v2/clients/{client_id}/pets - Создание питомца")
+    def post_client_pet(self, client_id: int, json_data: dict):
+        endpoint = Url.POST_CLIENT_PET.replace("{client_id}", str(client_id))
+        return self.post(endpoint, json_data=json_data)
+
+    @allure.step("PATCH /api/v2/clients/{client_id}/pets/{pet_id} - Обновление питомца")
+    def patch_client_pet(self, client_id: int, pet_id: int, json_data: dict):
+        endpoint = (
+            Url.PATCH_CLIENT_PET.replace("{client_id}", str(client_id)).replace("{pet_id}", str(pet_id))
+        )
+        return self.patch(endpoint, json_data=json_data)

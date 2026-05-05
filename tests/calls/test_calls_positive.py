@@ -59,22 +59,19 @@ class TestCallsPositive:
     def test_get_calls_search(self, calls_start):
         calls_start.get_calls_search()
 
-    # @pytest.mark.positive
-    # @allure.epic('Звонки')
-    # @allure.feature('POST /api/v2/users/{user_id}/calls -> PATCH')
-    # @allure.title('Цепочка: создание прозвона -> обновление (по call_id из ответа)')
-    # def test_call_create_and_update_flow(self, calls_start):
-    #     response_create = calls_start.create_user_call()
-    #     call_id = _get_id_from_response(response_create)
-    #     if call_id is None:
-    #         # API прозвонов не возвращает id в ответе создания — берём из списка после создания
-    #         response_list = calls_start.get_user_calls()
-    #         call_id = _get_call_id_from_list_response(response_list)
-    #     assert call_id is not None, (
-    #         f"Не удалось получить call_id: ни из ответа создания {getattr(response_create, 'response_json', None)}, "
-    #         "ни из списка прозвонов"
-    #     )
-    #     calls_start.update_user_call(call_id=call_id)
+    @pytest.mark.positive
+    @allure.epic('Звонки')
+    @allure.feature('POST /api/v2/users/{user_id}/calls')
+    @allure.title('Создание прозвона')
+    def test_create_user_call(self, calls_start):
+        calls_start.create_user_call()
+
+    @pytest.mark.positive
+    @allure.epic('Звонки')
+    @allure.feature('PATCH /api/v2/users/{user_id}/calls/{call_id}')
+    @allure.title('Обновление прозвона')
+    def test_update_user_call(self, calls_start):
+        calls_start.update_user_call()
 
     @pytest.mark.positive
     @allure.epic('Звонки')

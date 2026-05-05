@@ -23,3 +23,17 @@ class AdmissionMethods(ApiClient):
     def create_admission(self, user_id: int, json_data: dict):
         endpoint = Url.POST_CREATE_ADMISSION.replace("{user_id}", str(user_id))
         return self.post(endpoint, json_data=json_data)
+
+    @allure.step("PATCH /api/v2/users/{user_id}/admission/{admission_id} - Обновление приёма")
+    def patch_admission(self, user_id: int, admission_id: int, json_data: dict):
+        endpoint = (
+            Url.PATCH_USER_ADMISSION.replace("{user_id}", str(user_id)).replace(
+                "{admission_id}", str(admission_id)
+            )
+        )
+        return self.patch(endpoint, json_data=json_data)
+
+    @allure.step("POST /api/v2/users/admission/{admission_id}/confirm - Подтверждение приёма")
+    def post_admission_confirm(self, admission_id: int, json_data: dict = None):
+        endpoint = Url.POST_ADMISSION_CONFIRM.replace("{admission_id}", str(admission_id))
+        return self.post(endpoint, json_data=json_data or {})

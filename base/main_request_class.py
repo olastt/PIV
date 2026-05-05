@@ -1,4 +1,6 @@
+import json
 import os
+
 import httpx
 from dotenv import load_dotenv
 from base.attach_curl import attach_response_info
@@ -141,7 +143,11 @@ class ApiClient:
                     url, headers=merged_headers, params=params, json=json_data, data=data, timeout=timeout
                 )
             elif method_upper == "DELETE":
-                raw_response = httpx.delete(url, headers=merged_headers, params=params, timeout=timeout)
+                # Для совместимости версий httpx отправляем DELETE через универсальный request().
+                delete_kwargs = {"headers": merged_headers, "params": params, "timeout": timeout}
+                if json_data is not None:
+                    delete_kwargs["content"] = json.dumps(json_data, ensure_ascii=False).encode("utf-8")
+                raw_response = httpx.request("DELETE", url, **delete_kwargs)
             else:
                 raise ValueError(f"Метод {method_upper} не поддерживается")
 
@@ -183,10 +189,19 @@ class ApiClient:
         return self._send_request("PATCH", url, headers=headers, params=params, json_data=json_data, data=data,
                                   timeout=timeout)
 
-    def delete(self, endpoint: str, headers: dict = None, params: dict = None, timeout: float = 90) -> Response:
-        """Выполняет DELETE запрос"""
+    def delete(
+        self,
+        endpoint: str,
+        headers: dict = None,
+        params: dict = None,
+        json_data: dict = None,
+        timeout: float = 90,
+    ) -> Response:
+        """Выполняет DELETE запрос (опционально JSON body, как в Postman для products/categoriesproducts)."""
         url = self._build_url(endpoint)
-        return self._send_request("DELETE", url, headers=headers, params=params, timeout=timeout)
+        return self._send_request(
+            "DELETE", url, headers=headers, params=params, json_data=json_data, timeout=timeout
+        )
 
     def check_errors_during_test(self):
         """

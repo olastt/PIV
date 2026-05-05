@@ -29,6 +29,15 @@ class UserMethods(ApiClient):
         endpoint = Url.GET_USER_SETTINGS_PAYMENT.replace("{user_id}", str(user_id))
         return self.get(endpoint)
 
+    @allure.step("PATCH /api/v2/users/settings/payment/{record_id} - Обновление настроек оплат")
+    def patch_user_settings_payment(self, record_id: int, json_data: dict):
+        endpoint = Url.PATCH_USER_SETTINGS_PAYMENT.replace("{record_id}", str(record_id))
+        return self.patch(endpoint, json_data=json_data)
+
+    @allure.step("POST /api/v2/users/settings/payment/0 - Создание настроек оплат")
+    def post_user_settings_payment_create(self, json_data: dict):
+        return self.post(Url.POST_USER_SETTINGS_PAYMENT_CREATE, json_data=json_data)
+
     @allure.step("GET /api/v2/users/{user_id}/stores - Склады по пользователю")
     def get_user_stores(self, user_id: int):
         endpoint = Url.GET_USER_STORES.replace("{user_id}", str(user_id))
