@@ -11,6 +11,7 @@ class CassaStart:
     def get_cassa_by_user(self, user_id=1, params=None):
         with allure.step("Запрос касс пользователя"):
             response = self.cassa.get_cassa_by_user(user_id, params=params)
+            print(response)
         with allure.step("Проверка статус кода 200"):
             response.assert_status_code(200)
         return response

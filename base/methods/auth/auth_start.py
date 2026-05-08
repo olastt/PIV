@@ -39,10 +39,15 @@ def _extract_token_from_response(response_json: dict) -> str:
 
 
 def write_token_to_env(token: str, env_path: str = None):
-    """Записывает токен в .env (X_REST_API_KEY и X_TOKEN для совместимости)."""
+    """Записывает токен в .env и в текущее окружение процесса."""
     path = env_path or _get_env_path()
     set_key(path, "X_REST_API_KEY", token)
     set_key(path, "X_TOKEN", token)
+    set_key(path, "TOKEN", token)
+    # Важно для текущего pytest-процесса: следующие тесты берут токен из os.environ.
+    os.environ["X_REST_API_KEY"] = token
+    os.environ["X_TOKEN"] = token
+    os.environ["TOKEN"] = token
 
 
 class AuthStart:

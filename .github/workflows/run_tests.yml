@@ -10,10 +10,6 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      LOGIN: ${{ secrets.LOGIN }}
-      PASSWORD: ${{ secrets.PASSWORD }}
-      APP_NAME: ${{ secrets.APP_NAME }}
     steps:
       - name: Force Node.js 24
         run: echo "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true" >> $GITHUB_ENV
@@ -27,8 +23,16 @@ jobs:
         run: pip install -r requirements.txt
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+      - name: Validate local .env exists
+        run: |
+          if [ ! -f .env ]; then
+            echo "ERROR: .env not found in repository root."
+            exit 1
+          fi
       - name: Run tests
-        run: pytest tests/ --tb=no -q 2>&1 | tee pytest-output.txt
+        run: |
+          pytest tests/auth/test_auth_positive.py::TestAuthPositive::test_auth_with_login_and_password_and_save_token --tb=no -q 2>&1 | tee pytest-output.txt
+          pytest tests/ --tb=no -q -k "not test_auth_with_login_and_password_and_save_token" 2>&1 | tee -a pytest-output.txt
         continue-on-error: true
       - name: Parse test results
         run: |
