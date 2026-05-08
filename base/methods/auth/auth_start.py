@@ -57,6 +57,7 @@ class AuthStart:
         """
         _login = login if login is not None else os.getenv("LOGIN")
         _password = password if password is not None else os.getenv("PASSWORD")
+        _app_name = app_name if app_name is not None else os.getenv("APP_NAME") or os.getenv("X_MOBILE_APP")
         if not _login or not _password:
             raise AssertionError(
                 "Для авторизации нужны LOGIN и PASSWORD. Задайте их в .env (в корне проекта mobile-) или передайте в вызов."
@@ -69,7 +70,7 @@ class AuthStart:
             allure.attachment_type.TEXT,
         )
         service = auth_service or AuthMethods()
-        response_data = service.authorize(login=login, password=password, app_name=app_name)
+        response_data = service.authorize(login=_login, password=_password, app_name=_app_name)
 
         with allure.step("Проверка статус кода 200"):
             if response_data.response_status != 200:
