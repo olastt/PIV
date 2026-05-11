@@ -36,13 +36,13 @@ jobs:
         continue-on-error: true
       - name: Parse test results
         run: |
-          PASSED=$(grep -oP '\d+(?= passed)' pytest-output.txt | head -1 || echo "0")
-          FAILED=$(grep -oP '\d+(?= failed)' pytest-output.txt | head -1 || echo "0")
-          ERROR=$(grep -oP '\d+(?= error)' pytest-output.txt | head -1 || echo "0")
+          PASSED=$(grep -oP '\d+(?= passed)' pytest-output.txt | awk '{s+=$1} END {print s+0}')
+          FAILED=$(grep -oP '\d+(?= failed)' pytest-output.txt | awk '{s+=$1} END {print s+0}')
+          ERROR=$(grep -oP '\d+(?= error)' pytest-output.txt | awk '{s+=$1} END {print s+0}')
           FAILED_TESTS=$(grep -E "^FAILED" pytest-output.txt | sed 's/FAILED //' | sed 's/ - .*//' | head -20 | tr '\n' '|' || echo "")
-          echo "PASSED=${PASSED:-0}" >> $GITHUB_ENV
-          echo "FAILED=${FAILED:-0}" >> $GITHUB_ENV
-          echo "ERROR=${ERROR:-0}" >> $GITHUB_ENV
+          echo "PASSED=${PASSED}" >> $GITHUB_ENV
+          echo "FAILED=${FAILED}" >> $GITHUB_ENV
+          echo "ERROR=${ERROR}" >> $GITHUB_ENV
           echo "FAILED_TESTS=${FAILED_TESTS}" >> $GITHUB_ENV
       - name: Generate Allure report
         uses: simple-elf/allure-report-action@master
@@ -81,3 +81,4 @@ jobs:
           resp = urllib.request.urlopen(req)
           print(resp.read().decode())
           EOF
+ 
