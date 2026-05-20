@@ -54,10 +54,12 @@ class DiagnosesStart:
         return response
 
     def update_diagnos(self, diagnos_id=None, json_data=None):
+        created_for_update = False
         if diagnos_id is None:
             with allure.step("Подготовка: создание диагноза для update"):
                 response_create = self.create_diagnos()
                 diagnos_id = _get_id_from_response(response_create)
+                created_for_update = True
             assert diagnos_id is not None, (
                 f"Не удалось извлечь id из ответа создания: {getattr(response_create, 'response_json', None)}"
             )
@@ -68,11 +70,18 @@ class DiagnosesStart:
                     "status": "ACTIVE",
                 }
             }
-        with allure.step("Обновление диагноза"):
-            response = self.diagnoses.patch_diagnos(diagnos_id, json_data)
-        with allure.step("Проверка статус кода 200"):
-            response.assert_status_code(200)
-        return response
+        try:
+            with allure.step("Обновление диагноза"):
+                response = self.diagnoses.patch_diagnos(diagnos_id, json_data)
+            with allure.step("Проверка статус кода 200"):
+                response.assert_status_code(200)
+            return response
+        finally:
+            if created_for_update:
+                with allure.step("Cleanup: удаление созданного для update диагноза"):
+                    cleanup_response = self.diagnoses.delete_diagnos(diagnos_id)
+                with allure.step("Проверка статус кода cleanup"):
+                    cleanup_response.assert_status_code(200)
 
     def delete_diagnos(self, diagnos_id=None):
         if diagnos_id is None:

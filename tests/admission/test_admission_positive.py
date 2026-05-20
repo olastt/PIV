@@ -33,13 +33,13 @@ class TestAdmissionPositive:
     def test_get_admissions_by_user(self, admission_start, filter_status):
         admission_start.get_admissions_by_user(filter_status=filter_status)
 
-    # @pytest.mark.positive
-    # @allure.epic('Приемы')
-    # @allure.feature('POST /api/v2/users/{user_id}/admission')
-    # @allure.title('Создание приёма')
-    # @Test(run_test=True, group_name="Приемы", log=True)
-    # def test_create_admission(self, admission_start):
-    #     admission_start.create_admission()
+    @pytest.mark.positive
+    @allure.epic('Приемы')
+    @allure.feature('POST /api/v2/users/{user_id}/admission')
+    @allure.title('Создание приёма')
+    @Test(run_test=True, group_name="Приемы", log=True)
+    def test_create_admission(self, admission_start):
+        admission_start.create_admission()
     #
     # @pytest.mark.positive
     # @allure.epic('Приемы')

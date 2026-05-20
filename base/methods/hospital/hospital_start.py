@@ -54,7 +54,7 @@ class HospitalStart:
                     "user_id": 10,
                     "place": "1",
                     "hospital_block_id": 2,
-                    "description": "какое-то описание Тестовое из постман22222",
+                    "description": "тестовое описание",
                     "status": "planned",
                 }
             }

@@ -20,7 +20,7 @@ def _default_create_admission_payload(slot: int) -> dict:
             "user_id": 1,
             "clinic_id": 1,
             "client_id": 1,
-            "pet_id": 134,
+            "pet_id": 1,
             "status": "not_confirmed",
             "description": "test admission",
             "admission_length": "00:15:00",
@@ -114,44 +114,44 @@ class AdmissionStart:
             response.assert_status_code(200)
         return response
 
-    # def create_admission(self, user_id=1, json_data=None):
-    #     use_default_payload = json_data is None
-    #     max_attempts = 6 if use_default_payload else 3
-    #     response = None
-    #     last_exc = None
-    #
-    #     for attempt in range(max_attempts):
-    #         current_json = json_data
-    #         if use_default_payload:
-    #             slot = next(_create_admission_slot)
-    #             current_json = _default_create_admission_payload(slot)
-    #
-    #         try:
-    #             with allure.step("POST /api/v2/users/{user_id}/admission"):
-    #                 response = self.admission.create_admission(user_id, json_data=current_json)
-    #         except Exception as exc:
-    #             last_exc = exc
-    #             if attempt == max_attempts - 1 or not _is_retryable_create_error(exc):
-    #                 raise
-    #             with allure.step(f"Повтор create_admission после transport error, попытка {attempt + 2}"):
-    #                 pass
-    #             continue
-    #
-    #         if response.response_status == 200:
-    #             break
-    #
-    #         if not use_default_payload or response.response_status not in (500, 520):
-    #             break
-    #
-    #         with allure.step(f"Повтор create_admission после {response.response_status}, попытка {attempt + 2}"):
-    #             pass
-    #
-    #     if response is None and last_exc is not None:
-    #         raise last_exc
-    #
-    #     with allure.step("Проверка статус кода"):
-    #         response.assert_status_code(200)
-    #     return response
+    def create_admission(self, user_id=1, json_data=None):
+        use_default_payload = json_data is None
+        max_attempts = 6 if use_default_payload else 3
+        response = None
+        last_exc = None
+
+        for attempt in range(max_attempts):
+            current_json = json_data
+            if use_default_payload:
+                slot = next(_create_admission_slot)
+                current_json = _default_create_admission_payload(slot)
+
+            try:
+                with allure.step("POST /api/v2/users/{user_id}/admission"):
+                    response = self.admission.create_admission(user_id, json_data=current_json)
+            except Exception as exc:
+                last_exc = exc
+                if attempt == max_attempts - 1 or not _is_retryable_create_error(exc):
+                    raise
+                with allure.step(f"Повтор create_admission после transport error, попытка {attempt + 2}"):
+                    pass
+                continue
+
+            if response.response_status == 200:
+                break
+
+            if not use_default_payload or response.response_status not in (500, 520):
+                break
+
+            with allure.step(f"Повтор create_admission после {response.response_status}, попытка {attempt + 2}"):
+                pass
+
+        if response is None and last_exc is not None:
+            raise last_exc
+
+        with allure.step("Проверка статус кода"):
+            response.assert_status_code(200)
+        return response
 
     # def patch_admission(self, user_id=1, admission_id=None, json_data=None):
     #     if admission_id is None:

@@ -35,9 +35,9 @@ class ClientsStart:
     def post_client(self):
         json_data = {
             "client_data": {
-                "last_name": "Клиент из Постман",
-                "first_name": "Постман",
-                "middle_name": "Постманович",
+                "last_name": "Тестовый",
+                "first_name": "Pytest",
+                "middle_name": "Тестов",
                 "cell_phone": "79180052448",
                 "address": "Краснодар",
                 "note": "просто запись",
