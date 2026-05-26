@@ -2,18 +2,11 @@ from uuid import uuid4
 
 import pytest
 
-from base.methods.calls.calls_start import CallsStart, resolve_call_id_after_create
-
-
-@pytest.fixture
-def calls_start():
-    """Фикстура для создания экземпляра CallsStart."""
-    return CallsStart()
+from base.methods.calls.calls_start import resolve_call_id_after_create
 
 
 @pytest.fixture
 def call_for_update(calls_start, user_id=1):
-    """Создаёт прозвон для теста update; id передаётся в update_user_call через calls_start."""
     note = f"pytest_call_{uuid4().hex[:8]}"
     json_data = {
         "call_data": {

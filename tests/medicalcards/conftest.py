@@ -2,15 +2,11 @@ import os
 
 import pytest
 
-from base.methods.medicalcards.medicalcards_start import (
-    MedicalcardsStart,
-    build_default_post_medicalcard_vaccination_json,
-)
+from base.methods.medicalcards.medicalcards_start import build_default_post_medicalcard_vaccination_json
 
 
 @pytest.fixture
 def patch_medicalcard_vaccination_json_data():
-
     medicalcard_id = int(os.getenv("MEDICALCARD_ID", "1"))
     return {
         "vaccination_data": {
@@ -35,12 +31,4 @@ def patch_medicalcard_vaccination_json_data():
 
 @pytest.fixture
 def post_medicalcard_vaccination_json_data():
-    """Тело POST вакцинации (единый источник — medicalcards_start.build_default_...)."""
     return build_default_post_medicalcard_vaccination_json()
-
-
-@pytest.fixture
-def medicalcards_start():
-    """Фикстура для создания экземпляра MedicalcardsStart."""
-    start = MedicalcardsStart()
-    yield start

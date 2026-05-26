@@ -177,6 +177,46 @@ class AdmissionStart:
     #     with allure.step("Проверка статус кода"):
     #         response.assert_status_code(200)
     #     return response
+
+    def patch_admission(self, user_id=1, admission_id=None, json_data=None):
+        if admission_id is None:
+            with allure.step("Create admission for PATCH"):
+                create_resp = self.create_admission(user_id=user_id)
+                admission_id = _admission_id_from_create_response(create_resp)
+        if json_data is None:
+            json_data = _default_create_admission_payload(next(_create_admission_slot))
+            json_data["admission_data"]["status"] = "accepted"
+            json_data["admission_data"]["description"] = "pytest patched admission"
+        with allure.step("PATCH /api/v2/users/{user_id}/admission/{admission_id}"):
+            response = self.admission.patch_admission(user_id, admission_id, json_data)
+        with allure.step("Check status code"):
+            response.assert_status_code(200)
+        return response
+
+    def confirm_admission(self, user_id=1, admission_id=None, json_data=None):
+        if admission_id is None:
+            with allure.step("Create admission for confirm"):
+                create_resp = self.create_admission(user_id=user_id)
+                admission_id = _admission_id_from_create_response(create_resp)
+        if json_data is None:
+            payload = _default_create_admission_payload(next(_create_admission_slot))
+            admission_data = payload["admission_data"]
+            json_data = {
+                "admission_data": {
+                    "type_id": admission_data["admission_type_id"],
+                    "admission_date": admission_data["admission_date"],
+                    "user_id": admission_data["user_id"],
+                    "clinic_id": admission_data["clinic_id"],
+                    "client_id": admission_data["client_id"],
+                    "patient_id": admission_data["pet_id"],
+                    "description": "pytest confirm admission",
+                }
+            }
+        with allure.step("POST /api/v2/users/admission/{admission_id}/confirm"):
+            response = self.admission.post_admission_confirm(admission_id, json_data=json_data)
+        with allure.step("Check status code"):
+            response.assert_status_code(200)
+        return response
     #
     # def confirm_admission(self, user_id=1, admission_id=None, json_data=None):
     #     if admission_id is None:

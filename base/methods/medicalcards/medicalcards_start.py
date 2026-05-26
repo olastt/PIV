@@ -125,6 +125,15 @@ class MedicalcardsStart:
     #         response.assert_status_code([200, 201, 422, 503])
     #     return response
 
+    def post_medicalcards_generate_llm(self, json_data: dict = None):
+        if json_data is None:
+            json_data = {"transcription": "Мой кот Борис плохо ест"}
+        with allure.step("POST /api/v2/medicalcards/generate-llm"):
+            response = self.medicalcards.post_medicalcards_generate_llm(json_data)
+        with allure.step("Check status code"):
+            response.assert_status_code([200, 201, 422, 503])
+        return response
+
     def post_create_medicalcard(self, client_id: int = None, json_data: dict = None):
         client_id = client_id or int(os.getenv("CLIENT_ID", "1"))
         pet_id = int(os.getenv("PET_ID", "1"))

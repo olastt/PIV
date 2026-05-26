@@ -2,8 +2,8 @@ import allure
 import pytest
 from Library.MakeyIS import Test
 
-class TestClientsPositive:
 
+class TestClientsPositive:
     @pytest.mark.positive
     @allure.epic('Клиенты')
     @allure.feature('GET /api/v2/clients/{client_id}')
@@ -60,19 +60,14 @@ class TestClientsPositive:
     def test_patch_client(self, clients_start):
         clients_start.patch_client(client_id=1)
 
-    # @pytest.mark.positive
-    # @allure.epic('Клиенты')
-    # @allure.feature('POST /api/v2/clients/combine')
-    # @allure.title('Объединение клиентов')
-    # @Test(run_test=True, group_name="Клиенты", log=True)
-    # def test_clients_combine(self, clients_start):
-    #     clients_start.post_clients_combine()
+    @pytest.mark.positive
+    @allure.feature("POST /api/v2/clients/combine")
+    @Test(run_test=True, group_name="Clients", log=True)
+    def test_clients_combine(self, clients_start):
+        clients_start.post_clients_combine()
 
     @pytest.mark.positive
-    @allure.epic('Клиенты')
-    @allure.feature('POST /api/v2/clients')
-    @allure.title('Создание клиента')
-    @Test(run_test=True, group_name="Клиенты", log=True)
+    @allure.feature("POST /api/v2/clients")
+    @Test(run_test=True, group_name="Clients", log=True)
     def test_create_client(self, clients_start):
         clients_start.post_client()
-

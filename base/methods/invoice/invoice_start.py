@@ -36,6 +36,20 @@ class InvoiceStart:
     #         response.assert_status_code(200)
     #     return response
 
+    def pay_invoice(self, client_id=1, json_data=None):
+        if json_data is None:
+            json_data = {
+                "invoice_data": {
+                    "invoice_id": int(os.getenv("PAYMENT_INVOICE_ID", "1")),
+                    "amount": int(os.getenv("PAYMENT_AMOUNT", "30")),
+                }
+            }
+        with allure.step("POST /api/v2/clients/{client_id}/payments"):
+            response = self.invoice.post_client_payments(client_id, json_data)
+        with allure.step("Check status code"):
+            response.assert_status_code([200, 201, 400, 404, 422])
+        return response
+
     def post_client_invoice(self, client_id=1, data: dict = None):
         if data is None:
             cid = int(os.getenv("CLIENT_ID", "1"))

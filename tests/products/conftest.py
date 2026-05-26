@@ -3,12 +3,8 @@ from uuid import uuid4
 
 import pytest
 
-from base.methods.products.products_start import ProductsStart
-
-
 @pytest.fixture
 def post_product_json_data():
-    """Тело POST /api/v2/products."""
     random_title = f"pytest_product_{uuid4().hex[:8]}"
     return {
         "product_data": {
@@ -25,19 +21,8 @@ def post_product_json_data():
 @pytest.fixture
 def post_categories_products_json_data():
     return {
-        "product_data": {
-            "is_service": 0,
-            "title": "чаппи3",
-            "price": 500,
-            "group_id": 69,
-        },
-        "clinic_id": 1,
-        "user_id": 1,
+        "category_data": {
+            "title": f"pytest_category_{uuid4().hex[:8]}",
+            "status": "active",
+        }
     }
-
-
-@pytest.fixture
-def products_start():
-    """Фикстура для создания экземпляра ProductsStart."""
-    start = ProductsStart()
-    yield start

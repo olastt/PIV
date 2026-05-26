@@ -67,6 +67,23 @@ class ProductsStart:
     #             assert key in data, f"В data нет поля {key}"
     #     return response
 
+    def get_product_pricing(self, product_id=None, qty=None, params=None):
+        if product_id is None:
+            product_id = os.getenv("PRICING_PRODUCT_ID", "1")
+        if qty is None:
+            qty = os.getenv("PRICING_QTY", "1")
+        if params is None:
+            params = {
+                "clinic_id": str(os.getenv("PRICING_CLINIC_ID", os.getenv("CLINIC_ID", "1"))),
+                "tag_id": str(os.getenv("PRICING_TAG_ID", "0")),
+                "party_account_id": str(os.getenv("PRICING_PARTY_ACCOUNT_ID", "1")),
+            }
+        with allure.step("GET /api/v2/products/{product_id}/pricing/{qty}"):
+            response = self.products.get_product_pricing(product_id, qty, params=params)
+        with allure.step("Check status code"):
+            response.assert_status_code([200, 404, 422])
+        return response
+
     def get_products_vaccines(self, clinic_id=1, page_size=10, page_number=1):
         params = {"clinic_id": clinic_id, "page[size]": page_size, "page[number]": page_number}
         with allure.step("GET /api/v2/products/vaccines"):
@@ -105,6 +122,15 @@ class ProductsStart:
     #         response.assert_status_code([200, 201])
     #     return response
 
+    def patch_product(self, product_id: int = 1, json_data: dict = None):
+        if json_data is None:
+            json_data = {"product_data": {"title": "pytest product patched"}}
+        with allure.step("PATCH /api/v2/products/{product_id}"):
+            response = self.products.patch_product(product_id, json_data)
+        with allure.step("Check status code"):
+            response.assert_status_code([200, 201, 404, 422])
+        return response
+
     def delete_products(self, json_data: dict = None):
         if json_data is None:
             json_data = {"product_data": {"product_ids": [os.getenv("DELETE_PRODUCT_IDS", "1_1_0")]}}
@@ -124,6 +150,15 @@ class ProductsStart:
     #     with allure.step("Проверка статус кода"):
     #         response.assert_status_code(200)
     #     return response
+
+    def post_categories_products(self, json_data: dict = None):
+        if json_data is None:
+            json_data = {"category_data": {"title": "pytest category", "status": "active"}}
+        with allure.step("POST /api/v2/categoriesproducts"):
+            response = self.products.post_categories_products(json_data)
+        with allure.step("Check status code"):
+            response.assert_status_code([200, 201, 422])
+        return response
 
     def patch_categories_products(self, category_id: int = 1, json_data: dict = None):
         if json_data is None:

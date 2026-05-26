@@ -109,3 +109,19 @@ class ClientsStart:
     #     with allure.step("Проверка статус кода"):
     #         response.assert_status_code([200, 201, 422])
     #     return response
+
+    def post_clients_combine(self, client_id_source=None, client_id_target=None, pet_id_target=0):
+        client_id_source = client_id_source or int(os.getenv("COMBINE_CLIENT_SOURCE_ID", "2"))
+        client_id_target = client_id_target or int(os.getenv("COMBINE_CLIENT_TARGET_ID", "1"))
+        json_data = {
+            "combine_data": {
+                "client_id_source": client_id_source,
+                "client_id_target": client_id_target,
+                "pet_id_target": pet_id_target,
+            }
+        }
+        with allure.step("POST /api/v2/clients/combine"):
+            response = self.clients.post_clients_combine(json_data)
+        with allure.step("Check status code"):
+            response.assert_status_code([200, 201, 400, 422])
+        return response
