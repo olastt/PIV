@@ -1,27 +1,40 @@
 import itertools
+import os
 from datetime import datetime, timedelta
 
 import allure
 from base.methods.admission.admission_methods import AdmissionMethods
 
 # Сдвиг даты на 15 минут на каждый дефолтный create (иначе повтор той же даты даёт 500).
-_CREATE_ADMISSION_BASE = datetime(2027, 3, 1, 15, 50, 0)
+_CREATE_ADMISSION_START_HOUR = 8
+_CREATE_ADMISSION_END_HOUR = 22
+_CREATE_ADMISSION_STEP_MINUTES = 15
+_CREATE_ADMISSION_SLOTS_PER_DAY = (
+    (_CREATE_ADMISSION_END_HOUR - _CREATE_ADMISSION_START_HOUR) * 60
+) // _CREATE_ADMISSION_STEP_MINUTES
 _create_admission_slot = itertools.count()
 
 
 def _default_create_admission_payload(slot: int) -> dict:
+    day_offset, slot_in_day = divmod(slot, _CREATE_ADMISSION_SLOTS_PER_DAY)
+    today = datetime.now().replace(
+        hour=_CREATE_ADMISSION_START_HOUR,
+        minute=0,
+        second=0,
+        microsecond=0,
+    )
     admission_date = (
-        _CREATE_ADMISSION_BASE + timedelta(minutes=15 * slot)
+        today + timedelta(days=day_offset, minutes=_CREATE_ADMISSION_STEP_MINUTES * slot_in_day)
     ).strftime("%Y-%m-%d %H:%M:%S")
     return {
         "admission_data": {
-            "admission_type_id": 4,
+            "admission_type_id": int(os.getenv("ADMISSION_TYPE_ID", "4")),
             "admission_date": admission_date,
-            "user_id": 1,
-            "clinic_id": 1,
-            "client_id": 1,
-            "pet_id": 1,
-            "status": "not_confirmed",
+            "user_id": int(os.getenv("ADMISSION_DOCTOR_ID", "1")),
+            "clinic_id": int(os.getenv("CLINIC_ID", "1")),
+            "client_id": int(os.getenv("ADMISSION_CLIENT_ID", "193")),
+            "pet_id": int(os.getenv("ADMISSION_PET_ID", "100")),
+            "status": os.getenv("ADMISSION_STATUS", "save"),
             "description": "test admission",
             "admission_length": "00:15:00",
         }
@@ -66,6 +79,36 @@ def _is_retryable_create_error(exc: Exception) -> bool:
         "Temporary failure",
     )
     return any(marker in text for marker in retryable_markers)
+
+
+def _response_text(response) -> str:
+    response_json = getattr(response, "response_json", None)
+    if response_json is not None:
+        return str(response_json).lower()
+    response_text = getattr(response, "response_text", None)
+    if response_text:
+        return str(response_text).lower()
+    raw_response = getattr(response, "response", None)
+    return str(getattr(raw_response, "text", "")).lower()
+
+
+def _is_busy_admission_slot(response) -> bool:
+    if getattr(response, "response_status", None) not in (400, 409, 422, 500, 520):
+        return False
+
+    text = _response_text(response)
+    busy_markers = (
+        "занят",
+        "занято",
+        "занята",
+        "место",
+        "слот",
+        "time is busy",
+        "already booked",
+        "already exists",
+        "busy",
+    )
+    return any(marker in text for marker in busy_markers)
 
 
 def _admission_id_from_create_response(response) -> int:
@@ -114,9 +157,10 @@ class AdmissionStart:
             response.assert_status_code(200)
         return response
 
-    def create_admission(self, user_id=1, json_data=None):
+    def create_admission(self, user_id=None, json_data=None):
+        user_id = user_id or int(os.getenv("ADMISSION_PATH_USER_ID", "16"))
         use_default_payload = json_data is None
-        max_attempts = 6 if use_default_payload else 3
+        max_attempts = _CREATE_ADMISSION_SLOTS_PER_DAY if use_default_payload else 1
         response = None
         last_exc = None
 
@@ -140,7 +184,7 @@ class AdmissionStart:
             if response.response_status == 200:
                 break
 
-            if not use_default_payload or response.response_status not in (500, 520):
+            if not use_default_payload or not _is_busy_admission_slot(response):
                 break
 
             with allure.step(f"Повтор create_admission после {response.response_status}, попытка {attempt + 2}"):
@@ -153,47 +197,49 @@ class AdmissionStart:
             response.assert_status_code(200)
         return response
 
-    # def patch_admission(self, user_id=1, admission_id=None, json_data=None):
-    #     if admission_id is None:
-    #         with allure.step("Подготовка: создание приёма для PATCH"):
-    #             create_resp = self.create_admission(user_id=user_id)
-    #             admission_id = _admission_id_from_create_response(create_resp)
-    #     if json_data is None:
-    #         json_data = {
-    #             "admission_data": {
-    #                 "admission_type_id": 4,
-    #                 "admission_date": "2026-03-02 09:00:00",
-    #                 "user_id": 1,
-    #                 "clinic_id": 1,
-    #                 "client_id": 1,
-    #                 "pet_id": 134,
-    #                 "status": "accepted",
-    #                 "description": "тест удаление",
-    #                 "admission_length": "00:15:00",
-    #             }
-    #         }
-    #     with allure.step("PATCH /api/v2/users/{user_id}/admission/{admission_id}"):
-    #         response = self.admission.patch_admission(user_id, admission_id, json_data)
-    #     with allure.step("Проверка статус кода"):
-    #         response.assert_status_code(200)
-    #     return response
-
     def patch_admission(self, user_id=1, admission_id=None, json_data=None):
         if admission_id is None:
-            with allure.step("Create admission for PATCH"):
+            with allure.step("Подготовка: создание приёма для PATCH"):
                 create_resp = self.create_admission(user_id=user_id)
                 admission_id = _admission_id_from_create_response(create_resp)
         if json_data is None:
-            json_data = _default_create_admission_payload(next(_create_admission_slot))
-            json_data["admission_data"]["status"] = "accepted"
-            json_data["admission_data"]["description"] = "pytest patched admission"
+            json_data = {
+                "admission_data": {
+                    "admission_type_id": 4,
+                    "admission_date": "2026-05-02 09:00:00",
+                    "user_id": 1,
+                    "clinic_id": 1,
+                    "client_id": 193,
+                    "pet_id": 100,
+                    "status": "accepted",
+                    "description": "тест удаление",
+                    "admission_length": "00:15:00",
+                }
+            }
         with allure.step("PATCH /api/v2/users/{user_id}/admission/{admission_id}"):
             response = self.admission.patch_admission(user_id, admission_id, json_data)
-        with allure.step("Check status code"):
+        with allure.step("Проверка статус кода"):
             response.assert_status_code(200)
         return response
 
-    def confirm_admission(self, user_id=1, admission_id=None, json_data=None):
+    # def patch_admission(self, user_id=None, admission_id=None, json_data=None):
+    #     user_id = user_id or int(os.getenv("ADMISSION_PATH_USER_ID", "16"))
+    #     if admission_id is None:
+    #         with allure.step("Create admission for PATCH"):
+    #             create_resp = self.create_admission(user_id=user_id)
+    #             admission_id = _admission_id_from_create_response(create_resp)
+    #     if json_data is None:
+    #         json_data = _default_create_admission_payload(next(_create_admission_slot))
+    #         json_data["admission_data"]["status"] = "accepted"
+    #         json_data["admission_data"]["description"] = "pytest patched admission"
+    #     with allure.step("PATCH /api/v2/users/{user_id}/admission/{admission_id}"):
+    #         response = self.admission.patch_admission(user_id, admission_id, json_data)
+    #     with allure.step("Check status code"):
+    #         response.assert_status_code(200)
+    #     return response
+
+    def confirm_admission(self, user_id=None, admission_id=None, json_data=None):
+        user_id = user_id or int(os.getenv("ADMISSION_PATH_USER_ID", "16"))
         if admission_id is None:
             with allure.step("Create admission for confirm"):
                 create_resp = self.create_admission(user_id=user_id)

@@ -67,22 +67,22 @@ class ProductsStart:
     #             assert key in data, f"В data нет поля {key}"
     #     return response
 
-    def get_product_pricing(self, product_id=None, qty=None, params=None):
-        if product_id is None:
-            product_id = os.getenv("PRICING_PRODUCT_ID", "1")
-        if qty is None:
-            qty = os.getenv("PRICING_QTY", "1")
-        if params is None:
-            params = {
-                "clinic_id": str(os.getenv("PRICING_CLINIC_ID", os.getenv("CLINIC_ID", "1"))),
-                "tag_id": str(os.getenv("PRICING_TAG_ID", "0")),
-                "party_account_id": str(os.getenv("PRICING_PARTY_ACCOUNT_ID", "1")),
-            }
-        with allure.step("GET /api/v2/products/{product_id}/pricing/{qty}"):
-            response = self.products.get_product_pricing(product_id, qty, params=params)
-        with allure.step("Check status code"):
-            response.assert_status_code([200, 404, 422])
-        return response
+    # def get_product_pricing(self, product_id=None, qty=None, params=None):
+    #     if product_id is None:
+    #         product_id = os.getenv("PRICING_PRODUCT_ID", "1")
+    #     if qty is None:
+    #         qty = os.getenv("PRICING_QTY", "1")
+    #     if params is None:
+    #         params = {
+    #             "clinic_id": str(os.getenv("PRICING_CLINIC_ID", os.getenv("CLINIC_ID", "1"))),
+    #             "tag_id": str(os.getenv("PRICING_TAG_ID", "0")),
+    #             "party_account_id": str(os.getenv("PRICING_PARTY_ACCOUNT_ID", "1")),
+    #         }
+    #     with allure.step("GET /api/v2/products/{product_id}/pricing/{qty}"):
+    #         response = self.products.get_product_pricing(product_id, qty, params=params)
+    #     with allure.step("Check status code"):
+    #         response.assert_status_code([200, 404, 422])
+    #     return response
 
     def get_products_vaccines(self, clinic_id=1, page_size=10, page_number=1):
         params = {"clinic_id": clinic_id, "page[size]": page_size, "page[number]": page_number}

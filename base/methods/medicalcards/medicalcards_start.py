@@ -29,15 +29,11 @@ def build_default_post_medicalcard_vaccination_json(
     pet_id: int = None,
 ) -> dict:
     """Тело POST вакцинации (как в tests/medicalcards/conftest.py)."""
-    medicalcard_id = medicalcard_id or int(os.getenv("MEDICALCARD_ID", "1"))
-    pet_id = pet_id or int(os.getenv("PET_ID", "1"))
     return {
         "vaccination_data": {
-            "medcard_id": medicalcard_id,
-            "pet_id": pet_id,
             "clinic_id": int(os.getenv("CLINIC_ID", "1")),
             "doctor_id": int(os.getenv("DOCTOR_ID", "1")),
-            "vaccine_id": int(os.getenv("VACCINE_ID", "1")),
+            "vaccine_id": os.getenv("VACCINE_ID_STRING", "1_1"),
             "vaccine_type": int(os.getenv("VACCINE_TYPE", "1")),
             "doza_value": int(os.getenv("VACCINE_DOZA_VALUE", "1")),
             "vaccine_date": os.getenv("VACCINE_DATE", "2025-11-12 15:57"),
@@ -181,7 +177,7 @@ class MedicalcardsStart:
         with allure.step("POST вакцинации к медкарте"):
             response = self.medicalcards.post_medicalcard_vaccination(medicalcard_id, pet_id, json_data)
         with allure.step("Проверка статус кода"):
-            response.assert_status_code([200, 201, 422])
+            response.assert_status_code([200, 201])
         if response.response_status in (200, 201):
             vid = _extract_vaccination_id_from_response(response)
             if vid is not None:

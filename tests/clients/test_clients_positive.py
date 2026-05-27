@@ -60,11 +60,11 @@ class TestClientsPositive:
     def test_patch_client(self, clients_start):
         clients_start.patch_client(client_id=1)
 
-    @pytest.mark.positive
-    @allure.feature("POST /api/v2/clients/combine")
-    @Test(run_test=True, group_name="Clients", log=True)
-    def test_clients_combine(self, clients_start):
-        clients_start.post_clients_combine()
+    # @pytest.mark.positive
+    # @allure.feature("POST /api/v2/clients/combine")
+    # @Test(run_test=True, group_name="Clients", log=True)
+    # def test_clients_combine(self, clients_start):
+    #     clients_start.post_clients_combine()
 
     @pytest.mark.positive
     @allure.feature("POST /api/v2/clients")

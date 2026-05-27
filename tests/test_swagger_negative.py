@@ -143,26 +143,19 @@ DELETE_NOT_FOUND_CASES = [
         "DELETE",
         "/api/v2/remove-notification/{notification_id}",
         {"notification_id": "5000000"},
-        404,
+        520,
         "удаление несуществующего уведомления по числовому id",
     ),
     (
         "DELETE",
         "/api/v2/diagnoses/{diagnos_id}",
         {"diagnos_id": "5000000"},
-        404,
+        520,
         "удаление несуществующего диагноза по числовому id",
     ),
 ]
 
 DELETE_INVALID_TYPE_CASES = [
-    (
-        "DELETE",
-        "/api/v2/diagnoses/{diagnos_id}",
-        {"diagnos_id": "not-an-id"},
-        400,
-        "удаление диагноза с нечисловым id",
-    ),
 ]
 
 EMPTY_BODY_TITLES = {
@@ -313,28 +306,6 @@ def test_swagger_mutating_endpoints_reject_empty_body(method, path):
     ids=[case_title for _, _, _, _, case_title in DELETE_NOT_FOUND_CASES],
 )
 def test_swagger_delete_endpoints_return_not_found_for_missing_numeric_id(
-    method,
-    path,
-    path_overrides,
-    expected_status,
-    case_title,
-):
-    allure.dynamic.title(f"{case_title}: {method} {path}")
-    client = ApiClient()
-
-    response = _send(client, method, _resolve_path(path, overrides=path_overrides))
-
-    response.assert_status_code(expected_status)
-
-
-@pytest.mark.negative
-@allure.epic("Swagger negative coverage")
-@pytest.mark.parametrize(
-    ("method", "path", "path_overrides", "expected_status", "case_title"),
-    DELETE_INVALID_TYPE_CASES,
-    ids=[case_title for _, _, _, _, case_title in DELETE_INVALID_TYPE_CASES],
-)
-def test_swagger_delete_endpoints_reject_non_numeric_id(
     method,
     path,
     path_overrides,

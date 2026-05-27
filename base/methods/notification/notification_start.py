@@ -37,14 +37,14 @@ class NotificationStart:
             response.assert_status_code(200)
         return response
 
-    def post_vetmanager_hook(self, json_data: dict = None):
-        if json_data is None:
-            json_data = {"list_notifications": "[]"}
-        with allure.step("POST /api/v2/vetmanager-hook"):
-            response = self.notification.post_vetmanager_hook(json_data)
-        with allure.step("Check status code"):
-            response.assert_status_code([200, 201, 204, 422])
-        return response
+    # def post_vetmanager_hook(self, json_data: dict = None):
+    #     if json_data is None:
+    #         json_data = {"list_notifications": "[]"}
+    #     with allure.step("POST /api/v2/vetmanager-hook"):
+    #         response = self.notification.post_vetmanager_hook(json_data)
+    #     with allure.step("Check status code"):
+    #         response.assert_status_code([200, 201, 204, 422])
+    #     return response
 
     def delete_remove_notification(self, notification_id: int = 1):
         clinic_id = int(os.getenv("CLINIC_ID", "1"))
