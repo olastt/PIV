@@ -1,4 +1,4 @@
-import allure
+﻿import allure
 import pytest
 from Library.MakeyIS import Test
 
@@ -27,12 +27,6 @@ class TestProductsPositive:
     @Test(run_test=True, group_name="Products", log=True)
     def test_get_product_stockbalances(self, products_start):
         products_start.get_product_stockbalances(product_id=1)
-
-    # @pytest.mark.positive
-    # @allure.feature("GET /api/v2/products/{product_id}/pricing/{qty}")
-    # @Test(run_test=True, group_name="Products", log=True)
-    # def test_get_product_pricing(self, products_start):
-    #     products_start.get_product_pricing()
 
     @pytest.mark.positive
     @allure.feature("GET /api/v2/products/vaccines")

@@ -1,5 +1,7 @@
 from json import JSONDecodeError
 
+from pydantic import TypeAdapter, ValidationError
+
 
 class Response:
     STATUS_CODE_ERROR = "Статус-код ожидался: {}, получен: {}"
@@ -31,6 +33,26 @@ class Response:
         else:
             assert self.response_status == status_code, \
                 self.STATUS_CODE_ERROR.format(status_code, self.response_status)
+        if 200 <= self.response_status < 300:
+            self.assert_registered_schema()
+        return self
+
+    def assert_schema(self, schema):
+        try:
+            TypeAdapter(schema).validate_python(self.response_json)
+        except ValidationError as exc:
+            raise AssertionError(
+                f"Response body does not match schema {schema}: {exc}\n"
+                f"Response body: {self.response_json}"
+            ) from exc
+        return self
+
+    def assert_registered_schema(self):
+        from src.schemas.response_registry import schema_for_response
+
+        schema = schema_for_response(self.response)
+        if schema is not None:
+            self.assert_schema(schema)
         return self
 
     def __str__(self):

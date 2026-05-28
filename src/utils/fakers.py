@@ -5,7 +5,7 @@ from string import ascii_letters, digits
 from faker import Faker
 from faker.providers import company
 
-from settings import base_settings
+from src.config.settings import base_settings
 
 fake_locales = base_settings.faker_locales
 

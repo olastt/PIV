@@ -1,4 +1,4 @@
-import os
+﻿import os
 
 import allure
 from base.methods.notification.notification_methods import NotificationMethods
@@ -7,25 +7,6 @@ from base.methods.notification.notification_methods import NotificationMethods
 class NotificationStart:
     def __init__(self):
         self.notification = NotificationMethods()
-
-    # def post_notification_device(self, json_data: dict = None):
-    #     domain = os.getenv("DOMAIN", "test")
-    #     if json_data is None:
-    #         json_data = {
-    #             "device_data": {
-    #                 "user_id": int(os.getenv("USER_ID", "1")),
-    #                 "device_id": "pytest-device-id",
-    #                 "device_token": None,
-    #                 "platform": "android",
-    #                 "clinic_id": int(os.getenv("CLINIC_ID", "1")),
-    #                 "domain_name": domain,
-    #             }
-    #         }
-    #     with allure.step("POST /api/v2/notification/device"):
-    #         response = self.notification.post_notification_device(json_data)
-    #     with allure.step("Check status code"):
-    #         response.assert_status_code([200, 201, 422])
-    #     return response
 
     def get_notification_settings(self, clinic_id: int = None, user_id: int = None):
         clinic_id = clinic_id or int(os.getenv("CLINIC_ID", "1"))
@@ -36,15 +17,6 @@ class NotificationStart:
         with allure.step("Check status code 200"):
             response.assert_status_code(200)
         return response
-
-    # def post_vetmanager_hook(self, json_data: dict = None):
-    #     if json_data is None:
-    #         json_data = {"list_notifications": "[]"}
-    #     with allure.step("POST /api/v2/vetmanager-hook"):
-    #         response = self.notification.post_vetmanager_hook(json_data)
-    #     with allure.step("Check status code"):
-    #         response.assert_status_code([200, 201, 204, 422])
-    #     return response
 
     def delete_remove_notification(self, notification_id: int = 1):
         clinic_id = int(os.getenv("CLINIC_ID", "1"))

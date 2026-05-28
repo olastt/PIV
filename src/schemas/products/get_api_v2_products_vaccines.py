@@ -1,0 +1,17 @@
+﻿from typing import Any, Optional
+
+from pydantic import BaseModel, ConfigDict, Field, RootModel, StrictBool, StrictFloat, StrictInt, StrictStr
+
+
+class StrictResponseModel(BaseModel):
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class GetApiV2ProductsVaccinesItem(StrictResponseModel):
+    id: Any
+    name: Any
+
+
+class GetApiV2ProductsVaccinesResponse(RootModel[list[GetApiV2ProductsVaccinesItem]]):
+    pass
+

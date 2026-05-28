@@ -63,4 +63,3 @@ class ValidationErrorResponse(BaseModel):
     success: StrictBool
     message: StrictStr
     errors: Optional[Dict[str, Any]] = None
-

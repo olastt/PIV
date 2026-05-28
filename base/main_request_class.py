@@ -5,7 +5,7 @@ import httpx
 from dotenv import load_dotenv
 from base.attach_curl import attach_response_info
 from base.response import Response
-from settings import base_settings
+from src.config.settings import base_settings
 
 # Загружаем .env из корня проекта (при запуске pytest из tests/users иначе не подхватится)
 _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
