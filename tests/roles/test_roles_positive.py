@@ -1,11 +1,13 @@
 import allure
 import pytest
+from Library.MakeyIS import Test
 
 
-@allure.epic("API по Swagger")
-@allure.feature("Roles")
 class TestRolesPositive:
     @pytest.mark.positive
-    @allure.title("GET /api/v2/roles/{id_role} — роль по ID")
+    @allure.epic("Роли")
+    @allure.feature("GET /api/v2/roles/{id_role}")
+    @allure.title("Получение роли по ID")
+    @Test(run_test=True, group_name="Роли", log=True)
     def test_get_role_by_id(self, roles_start):
         roles_start.get_role_by_id(id_role=1)

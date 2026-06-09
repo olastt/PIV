@@ -1,11 +1,13 @@
 import allure
 import pytest
+from Library.MakeyIS import Test
 
 
-@allure.epic("API по Swagger")
-@allure.feature("Tariff")
 class TestTariffPositive:
     @pytest.mark.positive
-    @allure.title("GET /api/v2/tariff — данные тарифа")
+    @allure.epic("Тариф")
+    @allure.feature("GET /api/v2/tariff")
+    @allure.title("Получение данных по тарифу")
+    @Test(run_test=True, group_name="Тариф", log=True)
     def test_get_tariff(self, tariff_start):
         tariff_start.get_tariff()

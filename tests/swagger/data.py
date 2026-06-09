@@ -144,70 +144,70 @@ DELETE_NOT_FOUND_CASES = [
         "/api/v2/remove-notification/{notification_id}",
         {"notification_id": "5000000"},
         520,
-        "СѓРґР°Р»РµРЅРёРµ РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ СѓРІРµРґРѕРјР»РµРЅРёСЏ РїРѕ С‡РёСЃР»РѕРІРѕРјСѓ id",
+        "удаление несуществующего уведомления по числовому id",
     ),
     (
         "DELETE",
         "/api/v2/diagnoses/{diagnos_id}",
         {"diagnos_id": "5000000"},
         520,
-        "СѓРґР°Р»РµРЅРёРµ РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ РґРёР°РіРЅРѕР·Р° РїРѕ С‡РёСЃР»РѕРІРѕРјСѓ id",
+        "удаление несуществующего диагноза по числовому id",
     ),
 ]
 
 EMPTY_BODY_TITLES = {
-    ("PATCH", "/api/v2/users/settings/payment/{recordId}"): "РѕР±РЅРѕРІР»РµРЅРёРµ РЅР°СЃС‚СЂРѕРµРє РѕРїР»Р°С‚С‹ Р±РµР· РѕР±СЏР·Р°С‚РµР»СЊРЅС‹С… РґР°РЅРЅС‹С…",
-    ("POST", "/api/v2/users/settings/payment/0"): "СЃРѕР·РґР°РЅРёРµ РЅР°СЃС‚СЂРѕРµРє РѕРїР»Р°С‚С‹ Р±РµР· РѕР±СЏР·Р°С‚РµР»СЊРЅС‹С… РґР°РЅРЅС‹С…",
-    ("PATCH", "/api/v2/users/{user_id}"): "РѕР±РЅРѕРІР»РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Р±РµР· РґР°РЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ",
-    ("POST", "/api/v2/users/{user_id}/logout"): "logout РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Р±РµР· С‚РµР»Р° Р·Р°РїСЂРѕСЃР°",
-    ("PATCH", "/api/v2/hospital/{recordId}"): "РѕР±РЅРѕРІР»РµРЅРёРµ СЃС‚Р°С†РёРѕРЅР°СЂР° Р±РµР· РґР°РЅРЅС‹С… Р·Р°РїРёСЃРё",
-    ("POST", "/api/v2/users/{user_id}/calls"): "СЃРѕР·РґР°РЅРёРµ РїСЂРѕР·РІРѕРЅР° Р±РµР· РґР°РЅРЅС‹С… РїСЂРѕР·РІРѕРЅР°",
-    ("PATCH", "/api/v2/users/{user_id}/calls/{call_id}"): "РѕР±РЅРѕРІР»РµРЅРёРµ РїСЂРѕР·РІРѕРЅР° Р±РµР· РґР°РЅРЅС‹С… РїСЂРѕР·РІРѕРЅР°",
-    ("PATCH", "/api/v2/clients/{client_id}"): "РѕР±РЅРѕРІР»РµРЅРёРµ РєР»РёРµРЅС‚Р° Р±РµР· РґР°РЅРЅС‹С… РєР»РёРµРЅС‚Р°",
-    ("POST", "/api/v2/clients/combine"): "РѕР±СЉРµРґРёРЅРµРЅРёРµ РєР»РёРµРЅС‚РѕРІ Р±РµР· combine_data",
-    ("PATCH", "/api/v2/clients/{client_id}/pets/{pet_id}"): "РѕР±РЅРѕРІР»РµРЅРёРµ РїРёС‚РѕРјС†Р° Р±РµР· РґР°РЅРЅС‹С… РїРёС‚РѕРјС†Р°",
-    ("POST", "/api/v2/clients"): "СЃРѕР·РґР°РЅРёРµ РєР»РёРµРЅС‚Р° Р±РµР· РѕР±СЏР·Р°С‚РµР»СЊРЅС‹С… РґР°РЅРЅС‹С… РєР»РёРµРЅС‚Р°",
-    ("POST", "/api/v1/clients/{client_id}/pets"): "СЃРѕР·РґР°РЅРёРµ РїРёС‚РѕРјС†Р° Р±РµР· РѕР±СЏР·Р°С‚РµР»СЊРЅС‹С… РґР°РЅРЅС‹С… РїРёС‚РѕРјС†Р°",
-    ("POST", "/api/v2/products"): "СЃРѕР·РґР°РЅРёРµ РїСЂРѕРґСѓРєС‚Р° Р±РµР· РѕР±СЏР·Р°С‚РµР»СЊРЅС‹С… РґР°РЅРЅС‹С… РїСЂРѕРґСѓРєС‚Р°",
-    ("DELETE", "/api/v2/products"): "СѓРґР°Р»РµРЅРёРµ РїСЂРѕРґСѓРєС‚Р° Р±РµР· РѕР±СЏР·Р°С‚РµР»СЊРЅРѕРіРѕ product_ids",
-    ("PATCH", "/api/v2/products/{product_id}"): "РѕР±РЅРѕРІР»РµРЅРёРµ РїСЂРѕРґСѓРєС‚Р° Р±РµР· РґР°РЅРЅС‹С… РїСЂРѕРґСѓРєС‚Р°",
-    ("DELETE", "/api/v2/categoriesproducts"): "СѓРґР°Р»РµРЅРёРµ РєР°С‚РµРіРѕСЂРёРё РїСЂРѕРґСѓРєС‚Р° Р±РµР· РѕР±СЏР·Р°С‚РµР»СЊРЅРѕРіРѕ category_ids",
-    ("POST", "/api/v2/categoriesproducts"): "СЃРѕР·РґР°РЅРёРµ РєР°С‚РµРіРѕСЂРёРё РїСЂРѕРґСѓРєС‚Р° Р±РµР· РґР°РЅРЅС‹С… РєР°С‚РµРіРѕСЂРёРё",
-    ("PATCH", "/api/v2/categoriesproducts/{category_id}"): "РѕР±РЅРѕРІР»РµРЅРёРµ РєР°С‚РµРіРѕСЂРёРё РїСЂРѕРґСѓРєС‚Р° Р±РµР· РґР°РЅРЅС‹С… РєР°С‚РµРіРѕСЂРёРё",
-    ("POST", "/api/v2/notification/device"): "СЂРµРіРёСЃС‚СЂР°С†РёСЏ СѓСЃС‚СЂРѕР№СЃС‚РІР° Р±РµР· РґР°РЅРЅС‹С… СѓСЃС‚СЂРѕР№СЃС‚РІР°",
-    ("PATCH", "/api/v2/notification/settings"): "РѕР±РЅРѕРІР»РµРЅРёРµ РЅР°СЃС‚СЂРѕРµРє СѓРІРµРґРѕРјР»РµРЅРёР№ Р±РµР· РґР°РЅРЅС‹С… РЅР°СЃС‚СЂРѕРµРє",
-    ("POST", "/api/v2/vetmanager-hook"): "РІС‹Р·РѕРІ vetmanager-hook Р±РµР· СЃРїРёСЃРєР° СѓРІРµРґРѕРјР»РµРЅРёР№",
-    ("DELETE", "/api/v2/remove-notification/{notification_id}"): "СѓРґР°Р»РµРЅРёРµ СѓРІРµРґРѕРјР»РµРЅРёСЏ Р±РµР· РѕР±СЏР·Р°С‚РµР»СЊРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ",
-    ("POST", "/api/v2/users/16/admission"): "СЃРѕР·РґР°РЅРёРµ РїСЂРёРµРјР° Р±РµР· РґР°РЅРЅС‹С… РїСЂРёРµРјР°",
-    ("PATCH", "/api/v2/users/{user_id}/admission/{admission_id}"): "РѕР±РЅРѕРІР»РµРЅРёРµ РїСЂРёРµРјР° Р±РµР· РґР°РЅРЅС‹С… РїСЂРёРµРјР°",
-    ("POST", "/api/v2/users/admission/180/confirm"): "РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РїСЂРёРµРјР° Р±РµР· РґР°РЅРЅС‹С… РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ",
-    ("POST", "/api/v2/clients/{client_id}/invoices"): "СЃРѕР·РґР°РЅРёРµ СЃС‡РµС‚Р° Р±РµР· РґР°РЅРЅС‹С… СЃС‡РµС‚Р°",
-    ("POST", "/api/v2/clients/{client_id}/payments"): "РѕРїР»Р°С‚Р° СЃС‡РµС‚Р° Р±РµР· РґР°РЅРЅС‹С… РїР»Р°С‚РµР¶Р°",
-    ("POST", "/api/v2/medicalcards/{medicalcard_id}/vaccinations/{pet_id}"): "СЃРѕР·РґР°РЅРёРµ РІР°РєС†РёРЅР°С†РёРё Р±РµР· РґР°РЅРЅС‹С… РІР°РєС†РёРЅР°С†РёРё",
-    ("PATCH", "/api/v2/medicalcards/{medicalcard_id}/vaccinations/{vaccination_id}"): "РѕР±РЅРѕРІР»РµРЅРёРµ РІР°РєС†РёРЅР°С†РёРё Р±РµР· РґР°РЅРЅС‹С… РІР°РєС†РёРЅР°С†РёРё",
-    ("PATCH", "/api/v1/medicalcards/vaccinations/{vaccination_id}"): "РєРѕСЂРѕС‚РєРѕРµ РѕР±РЅРѕРІР»РµРЅРёРµ РІР°РєС†РёРЅР°С†РёРё Р±РµР· РґР°РЅРЅС‹С… РІР°РєС†РёРЅР°С†РёРё",
-    ("POST", "/api/v2/clients/{client_id}/medicalcards"): "СЃРѕР·РґР°РЅРёРµ РјРµРґРєР°СЂС‚С‹ Р±РµР· РґР°РЅРЅС‹С… РјРµРґРєР°СЂС‚С‹",
-    ("POST", "/api/v2/medicalcards/uploadfiles"): "Р·Р°РіСЂСѓР·РєР° С„Р°Р№Р»РѕРІ РјРµРґРєР°СЂС‚С‹ Р±РµР· РґР°РЅРЅС‹С… С„Р°Р№Р»Р°",
-    ("POST", "/api/v2/medicalcards/generate-llm"): "РіРµРЅРµСЂР°С†РёСЏ С‚РµРєСЃС‚Р° РјРµРґРєР°СЂС‚С‹ Р±РµР· prompt",
-    ("PATCH", "/api/v2/clients/{client_id}/medicalcards/88"): "РѕР±РЅРѕРІР»РµРЅРёРµ РјРµРґРєР°СЂС‚С‹ Р±РµР· РґР°РЅРЅС‹С… РјРµРґРєР°СЂС‚С‹",
-    ("POST", "/api/v2/combomanuals/streets"): "СЃРѕР·РґР°РЅРёРµ СѓР»РёС†С‹ Р±РµР· РґР°РЅРЅС‹С… СѓР»РёС†С‹",
-    ("POST", "/api/v2/combomanuals/cities"): "СЃРѕР·РґР°РЅРёРµ РіРѕСЂРѕРґР° Р±РµР· РґР°РЅРЅС‹С… РіРѕСЂРѕРґР°",
-    ("POST", "/api/v2/diagnoses"): "СЃРѕР·РґР°РЅРёРµ РґРёР°РіРЅРѕР·Р° Р±РµР· РґР°РЅРЅС‹С… РґРёР°РіРЅРѕР·Р°",
-    ("PATCH", "/api/v2/diagnoses/{diagnos_id}"): "РѕР±РЅРѕРІР»РµРЅРёРµ РґРёР°РіРЅРѕР·Р° Р±РµР· РґР°РЅРЅС‹С… РґРёР°РіРЅРѕР·Р°",
-    ("DELETE", "/api/v2/diagnoses/{diagnos_id}"): "СѓРґР°Р»РµРЅРёРµ РґРёР°РіРЅРѕР·Р° Р±РµР· РѕР±СЏР·Р°С‚РµР»СЊРЅС‹С… РґР°РЅРЅС‹С…",
+    ("PATCH", "/api/v2/users/settings/payment/{recordId}"): "обновление настроек оплаты без обязательных данных",
+    ("POST", "/api/v2/users/settings/payment/0"): "создание настроек оплаты без обязательных данных",
+    ("PATCH", "/api/v2/users/{user_id}"): "обновление пользователя без данных пользователя",
+    ("POST", "/api/v2/users/{user_id}/logout"): "logout пользователя без тела запроса",
+    ("PATCH", "/api/v2/hospital/{recordId}"): "обновление стационара без данных записи",
+    ("POST", "/api/v2/users/{user_id}/calls"): "создание прозвона без данных прозвона",
+    ("PATCH", "/api/v2/users/{user_id}/calls/{call_id}"): "обновление прозвона без данных прозвона",
+    ("PATCH", "/api/v2/clients/{client_id}"): "обновление клиента без данных клиента",
+    ("POST", "/api/v2/clients/combine"): "объединение клиентов без combine_data",
+    ("PATCH", "/api/v2/clients/{client_id}/pets/{pet_id}"): "обновление питомца без данных питомца",
+    ("POST", "/api/v2/clients"): "создание клиента без обязательных данных клиента",
+    ("POST", "/api/v1/clients/{client_id}/pets"): "создание питомца без обязательных данных питомца",
+    ("POST", "/api/v2/products"): "создание продукта без обязательных данных продукта",
+    ("DELETE", "/api/v2/products"): "удаление продукта без обязательного product_ids",
+    ("PATCH", "/api/v2/products/{product_id}"): "обновление продукта без данных продукта",
+    ("DELETE", "/api/v2/categoriesproducts"): "удаление категории продукта без обязательного category_ids",
+    ("POST", "/api/v2/categoriesproducts"): "создание категории продукта без данных категории",
+    ("PATCH", "/api/v2/categoriesproducts/{category_id}"): "обновление категории продукта без данных категории",
+    ("POST", "/api/v2/notification/device"): "регистрация устройства без данных устройства",
+    ("PATCH", "/api/v2/notification/settings"): "обновление настроек уведомлений без данных настроек",
+    ("POST", "/api/v2/vetmanager-hook"): "вызов vetmanager-hook без списка уведомлений",
+    ("DELETE", "/api/v2/remove-notification/{notification_id}"): "удаление уведомления без обязательных параметров",
+    ("POST", "/api/v2/users/16/admission"): "создание приема без данных приема",
+    ("PATCH", "/api/v2/users/{user_id}/admission/{admission_id}"): "обновление приема без данных приема",
+    ("POST", "/api/v2/users/admission/180/confirm"): "подтверждение приема без данных подтверждения",
+    ("POST", "/api/v2/clients/{client_id}/invoices"): "создание счета без данных счета",
+    ("POST", "/api/v2/clients/{client_id}/payments"): "оплата счета без данных платежа",
+    ("POST", "/api/v2/medicalcards/{medicalcard_id}/vaccinations/{pet_id}"): "создание вакцинации без данных вакцинации",
+    ("PATCH", "/api/v2/medicalcards/{medicalcard_id}/vaccinations/{vaccination_id}"): "обновление вакцинации без данных вакцинации",
+    ("PATCH", "/api/v1/medicalcards/vaccinations/{vaccination_id}"): "короткое обновление вакцинации без данных вакцинации",
+    ("POST", "/api/v2/clients/{client_id}/medicalcards"): "создание медкарты без данных медкарты",
+    ("POST", "/api/v2/medicalcards/uploadfiles"): "загрузка файлов медкарты без данных файла",
+    ("POST", "/api/v2/medicalcards/generate-llm"): "генерация текста медкарты без prompt",
+    ("PATCH", "/api/v2/clients/{client_id}/medicalcards/88"): "обновление медкарты без данных медкарты",
+    ("POST", "/api/v2/combomanuals/streets"): "создание улицы без данных улицы",
+    ("POST", "/api/v2/combomanuals/cities"): "создание города без данных города",
+    ("POST", "/api/v2/diagnoses"): "создание диагноза без данных диагноза",
+    ("PATCH", "/api/v2/diagnoses/{diagnos_id}"): "обновление диагноза без данных диагноза",
+    ("DELETE", "/api/v2/diagnoses/{diagnos_id}"): "удаление диагноза без обязательных данных",
 }
 
 
 def _invalid_auth_title(method: str, path: str) -> str:
-    return f"РќРµРІРµСЂРЅР°СЏ Р°РІС‚РѕСЂРёР·Р°С†РёСЏ: {method} {path}"
+    return f"Неверная авторизация: {method} {path}"
 
 
 def _invalid_path_title(method: str, path: str) -> str:
-    return f"РќРµРІР°Р»РёРґРЅС‹Р№ path-РїР°СЂР°РјРµС‚СЂ: {method} {path}"
+    return f"Невалидный path-параметр: {method} {path}"
 
 
 def _empty_body_title(method: str, path: str) -> str:
-    action = EMPTY_BODY_TITLES.get((method, path), "Р·Р°РїСЂРѕСЃ Р±РµР· РѕР±СЏР·Р°С‚РµР»СЊРЅРѕРіРѕ С‚РµР»Р°")
+    action = EMPTY_BODY_TITLES.get((method, path), "запрос без обязательного тела")
     return f"{action}: {method} {path}"
 
 
