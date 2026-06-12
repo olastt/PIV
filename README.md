@@ -1,4 +1,4 @@
-# API Autotests Project
+# API Pet in vet
 
 Проект автоматизированного тестирования API с использованием Python, pytest и Allure Reports.
 
@@ -24,8 +24,8 @@
 ### 1. Клонирование репозитория
 
 ```bash
-git clone https://gitlab.vetmanager.cloud/vetmanager/api-tests-mobile-backend
-cd api-tests-mobile-backend
+git clone 
+cd 
 ```
 
 ### 2. Настройка виртуального окружения
@@ -45,9 +45,9 @@ cp .env.example .env
 
 ### 4. Заполните необходимые переменные:
 
-LOGIN=your_login
-PASSWORD=your_password
-APP_NAME=vm
+LOGIN_PIV=your_login
+PASSWORD_PIV=your_password
+APP_NAME=piv
 TOKEN=your_login
 X_REST_API_KEY=your_key
 PLATFORM=test

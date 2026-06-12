@@ -1,104 +1,64 @@
-import re
-from importlib import import_module
 from urllib.parse import urlparse
 
-SCHEMA_REGISTRY = [
-    ('DELETE', re.compile('^/api/v2/categoriesproducts$'), 'src.schemas.categoriesproducts.delete_api_v2_categoriesproducts', 'DeleteApiV2CategoriesproductsResponse'),
-    ('DELETE', re.compile('^/api/v2/diagnoses/\\d+$'), 'src.schemas.diagnoses.delete_api_v2_diagnoses_id', 'DeleteApiV2DiagnosesIdResponse'),
-    ('DELETE', re.compile('^/api/v2/products$'), 'src.schemas.products.delete_api_v2_products', 'DeleteApiV2ProductsResponse'),
-    ('DELETE', re.compile('^/api/v2/remove\\-notification/\\d+$'), 'src.schemas.remove_notification.delete_api_v2_remove_notification_id', 'DeleteApiV2RemoveNotificationIdResponse'),
-    ('GET', re.compile('^/api/v1/combomanuals/resultofvisit$'), 'src.schemas.combomanuals.get_api_v1_combomanuals_resultofvisit', 'GetApiV1CombomanualsResultofvisitResponse'),
-    ('GET', re.compile('^/api/v2/billingurl$'), 'src.schemas.billingurl.get_api_v2_billingurl', 'GetApiV2BillingurlResponse'),
-    ('GET', re.compile('^/api/v2/calls/search$'), 'src.schemas.calls.get_api_v2_calls_search', 'GetApiV2CallsSearchResponse'),
-    ('GET', re.compile('^/api/v2/cassa/\\d+$'), 'src.schemas.cassa.get_api_v2_cassa_id', 'GetApiV2CassaIdResponse'),
-    ('GET', re.compile('^/api/v2/categoriesproducts$'), 'src.schemas.categoriesproducts.get_api_v2_categoriesproducts', 'GetApiV2CategoriesproductsResponse'),
-    ('GET', re.compile('^/api/v2/checkversion$'), 'src.schemas.checkversion.get_api_v2_checkversion', 'GetApiV2CheckversionResponse'),
-    ('GET', re.compile('^/api/v2/clients/medicalcards/diagnoses$'), 'src.schemas.clients.get_api_v2_clients_medicalcards_diagnoses', 'GetApiV2ClientsMedicalcardsDiagnosesResponse'),
-    ('GET', re.compile('^/api/v2/clients/search$'), 'src.schemas.clients.get_api_v2_clients_search', 'GetApiV2ClientsSearchResponse'),
-    ('GET', re.compile('^/api/v2/clients/\\d+$'), 'src.schemas.clients.get_api_v2_clients_id', 'GetApiV2ClientsIdResponse'),
-    ('GET', re.compile('^/api/v2/clients/\\d+/contacts$'), 'src.schemas.clients.get_api_v2_clients_id_contacts', 'GetApiV2ClientsIdContactsResponse'),
-    ('GET', re.compile('^/api/v2/clients/\\d+/invoices$'), 'src.schemas.clients.get_api_v2_clients_id_invoices', 'GetApiV2ClientsIdInvoicesResponse'),
-    ('GET', re.compile('^/api/v2/clients/\\d+/invoices/\\d+/products$'), 'src.schemas.clients.get_api_v2_clients_id_invoices_id_products', 'GetApiV2ClientsIdInvoicesIdProductsResponse'),
-    ('GET', re.compile('^/api/v2/clients/\\d+/match$'), 'src.schemas.clients.get_api_v2_clients_id_match', 'GetApiV2ClientsIdMatchResponse'),
-    ('GET', re.compile('^/api/v2/clients/\\d+/medicalcards$'), 'src.schemas.clients.get_api_v2_clients_id_medicalcards', 'GetApiV2ClientsIdMedicalcardsResponse'),
-    ('GET', re.compile('^/api/v2/clients/\\d+/medicalcards/history$'), 'src.schemas.clients.get_api_v2_clients_id_medicalcards_history', 'GetApiV2ClientsIdMedicalcardsHistoryResponse'),
-    ('GET', re.compile('^/api/v2/clients/\\d+/medicalcards/\\d+$'), 'src.schemas.clients.get_api_v2_clients_id_medicalcards_id', 'GetApiV2ClientsIdMedicalcardsIdResponse'),
-    ('GET', re.compile('^/api/v2/clients/\\d+/pets$'), 'src.schemas.clients.get_api_v2_clients_id_pets', 'GetApiV2ClientsIdPetsResponse'),
-    ('GET', re.compile('^/api/v2/clients/\\d+/pets/\\d+$'), 'src.schemas.clients.get_api_v2_clients_id_pets_id', 'GetApiV2ClientsIdPetsIdResponse'),
-    ('GET', re.compile('^/api/v2/clinics$'), 'src.schemas.clinics.get_api_v2_clinics', 'GetApiV2ClinicsResponse'),
-    ('GET', re.compile('^/api/v2/combomanuals/cities$'), 'src.schemas.combomanuals.get_api_v2_combomanuals_cities', 'GetApiV2CombomanualsCitiesResponse'),
-    ('GET', re.compile('^/api/v2/combomanuals/reasonsofvisit$'), 'src.schemas.combomanuals.get_api_v2_combomanuals_reasonsofvisit', 'GetApiV2CombomanualsReasonsofvisitResponse'),
-    ('GET', re.compile('^/api/v2/combomanuals/typescities$'), 'src.schemas.combomanuals.get_api_v2_combomanuals_typescities', 'GetApiV2CombomanualsTypescitiesResponse'),
-    ('GET', re.compile('^/api/v2/combomanuals/typesstreets$'), 'src.schemas.combomanuals.get_api_v2_combomanuals_typesstreets', 'GetApiV2CombomanualsTypesstreetsResponse'),
-    ('GET', re.compile('^/api/v2/combomanuals/vaccinationstypes$'), 'src.schemas.combomanuals.get_api_v2_combomanuals_vaccinationstypes', 'GetApiV2CombomanualsVaccinationstypesResponse'),
-    ('GET', re.compile('^/api/v2/combomanuals/\\d+$'), 'src.schemas.combomanuals.get_api_v2_combomanuals_id', 'GetApiV2CombomanualsIdResponse'),
-    ('GET', re.compile('^/api/v2/combomanuals/\\d+/streets$'), 'src.schemas.combomanuals.get_api_v2_combomanuals_id_streets', 'GetApiV2CombomanualsIdStreetsResponse'),
-    ('GET', re.compile('^/api/v2/diagnoses$'), 'src.schemas.diagnoses.get_api_v2_diagnoses', 'GetApiV2DiagnosesResponse'),
-    ('GET', re.compile('^/api/v2/diagnoses/\\d+$'), 'src.schemas.diagnoses.get_api_v2_diagnoses_id', 'GetApiV2DiagnosesIdResponse'),
-    ('GET', re.compile('^/api/v2/hospital$'), 'src.schemas.hospital.get_api_v2_hospital', 'GetApiV2HospitalResponse'),
-    ('GET', re.compile('^/api/v2/hospital/blocks$'), 'src.schemas.hospital.get_api_v2_hospital_blocks', 'GetApiV2HospitalBlocksResponse'),
-    ('GET', re.compile('^/api/v2/hospital/liststatuses$'), 'src.schemas.hospital.get_api_v2_hospital_liststatuses', 'GetApiV2HospitalListstatusesResponse'),
-    ('GET', re.compile('^/api/v2/hospital/\\d+$'), 'src.schemas.hospital.get_api_v2_hospital_id', 'GetApiV2HospitalIdResponse'),
-    ('GET', re.compile('^/api/v2/notification/settings$'), 'src.schemas.notification.get_api_v2_notification_settings', 'GetApiV2NotificationSettingsResponse'),
-    ('GET', re.compile('^/api/v2/pets/breeds$'), 'src.schemas.pets.get_api_v2_pets_breeds', 'GetApiV2PetsBreedsResponse'),
-    ('GET', re.compile('^/api/v2/pets/genders$'), 'src.schemas.pets.get_api_v2_pets_genders', 'GetApiV2PetsGendersResponse'),
-    ('GET', re.compile('^/api/v2/pets/types$'), 'src.schemas.pets.get_api_v2_pets_types', 'GetApiV2PetsTypesResponse'),
-    ('GET', re.compile('^/api/v2/pets/types/\\d+/breeds$'), 'src.schemas.pets.get_api_v2_pets_types_id_breeds', 'GetApiV2PetsTypesIdBreedsResponse'),
-    ('GET', re.compile('^/api/v2/products$'), 'src.schemas.products.get_api_v2_products', 'GetApiV2ProductsResponse'),
-    ('GET', re.compile('^/api/v2/products/categories$'), 'src.schemas.products.get_api_v2_products_categories', 'GetApiV2ProductsCategoriesResponse'),
-    ('GET', re.compile('^/api/v2/products/categoriesproducts$'), 'src.schemas.products.get_api_v2_products_categoriesproducts', 'GetApiV2ProductsCategoriesproductsResponse'),
-    ('GET', re.compile('^/api/v2/products/vaccines$'), 'src.schemas.products.get_api_v2_products_vaccines', 'GetApiV2ProductsVaccinesResponse'),
-    ('GET', re.compile('^/api/v2/products/\\d+$'), 'src.schemas.products.get_api_v2_products_id', 'GetApiV2ProductsIdResponse'),
-    ('GET', re.compile('^/api/v2/products/\\d+/stockbalances$'), 'src.schemas.products.get_api_v2_products_id_stockbalances', 'GetApiV2ProductsIdStockbalancesResponse'),
-    ('GET', re.compile('^/api/v2/properties$'), 'src.schemas.properties.get_api_v2_properties', 'GetApiV2PropertiesResponse'),
-    ('GET', re.compile('^/api/v2/roles/\\d+$'), 'src.schemas.roles.get_api_v2_roles_id', 'GetApiV2RolesIdResponse'),
-    ('GET', re.compile('^/api/v2/tariff$'), 'src.schemas.tariff.get_api_v2_tariff', 'GetApiV2TariffResponse'),
-    ('GET', re.compile('^/api/v2/users/admission/\\d+$'), 'src.schemas.admission.get_api_v2_users_admission_id', 'GetApiV2UsersAdmissionIdResponse'),
-    ('GET', re.compile('^/api/v2/users/doctors$'), 'src.schemas.users.get_api_v2_users_doctors', 'GetApiV2UsersDoctorsResponse'),
-    ('GET', re.compile('^/api/v2/users/\\d+$'), 'src.schemas.users.get_api_v2_users_id', 'GetApiV2UsersIdResponse'),
-    ('GET', re.compile('^/api/v2/users/\\d+/admission$'), 'src.schemas.admission.get_api_v2_users_id_admission', 'GetApiV2UsersIdAdmissionResponse'),
-    ('GET', re.compile('^/api/v2/users/\\d+/allowedclinics$'), 'src.schemas.users.get_api_v2_users_id_allowedclinics', 'GetApiV2UsersIdAllowedclinicsResponse'),
-    ('GET', re.compile('^/api/v2/users/\\d+/calls$'), 'src.schemas.users.get_api_v2_users_id_calls', 'GetApiV2UsersIdCallsResponse'),
-    ('GET', re.compile('^/api/v2/users/\\d+/calls/\\d+$'), 'src.schemas.users.get_api_v2_users_id_calls_id', 'GetApiV2UsersIdCallsIdResponse'),
-    ('GET', re.compile('^/api/v2/users/\\d+/home$'), 'src.schemas.users.get_api_v2_users_id_home', 'GetApiV2UsersIdHomeResponse'),
-    ('GET', re.compile('^/api/v2/users/\\d+/schedules$'), 'src.schemas.users.get_api_v2_users_id_schedules', 'GetApiV2UsersIdSchedulesResponse'),
-    ('GET', re.compile('^/api/v2/users/\\d+/settings/payment$'), 'src.schemas.users.get_api_v2_users_id_settings_payment', 'GetApiV2UsersIdSettingsPaymentResponse'),
-    ('GET', re.compile('^/api/v2/users/\\d+/stores$'), 'src.schemas.users.get_api_v2_users_id_stores', 'GetApiV2UsersIdStoresResponse'),
-    ('PATCH', re.compile('^/api/v2/categoriesproducts/\\d+$'), 'src.schemas.categoriesproducts.patch_api_v2_categoriesproducts_id', 'PatchApiV2CategoriesproductsIdResponse'),
-    ('PATCH', re.compile('^/api/v2/clients/\\d+$'), 'src.schemas.clients.patch_api_v2_clients_id', 'PatchApiV2ClientsIdResponse'),
-    ('PATCH', re.compile('^/api/v2/clients/\\d+/pets/\\d+$'), 'src.schemas.clients.patch_api_v2_clients_id_pets_id', 'PatchApiV2ClientsIdPetsIdResponse'),
-    ('PATCH', re.compile('^/api/v2/diagnoses/\\d+$'), 'src.schemas.diagnoses.patch_api_v2_diagnoses_id', 'PatchApiV2DiagnosesIdResponse'),
-    ('PATCH', re.compile('^/api/v2/hospital/\\d+$'), 'src.schemas.hospital.patch_api_v2_hospital_id', 'PatchApiV2HospitalIdResponse'),
-    ('PATCH', re.compile('^/api/v2/notification/settings$'), 'src.schemas.notification.patch_api_v2_notification_settings', 'PatchApiV2NotificationSettingsResponse'),
-    ('PATCH', re.compile('^/api/v2/users/settings/payment/\\d+$'), 'src.schemas.users.patch_api_v2_users_settings_payment_id', 'PatchApiV2UsersSettingsPaymentIdResponse'),
-    ('PATCH', re.compile('^/api/v2/users/\\d+$'), 'src.schemas.users.patch_api_v2_users_id', 'PatchApiV2UsersIdResponse'),
-    ('PATCH', re.compile('^/api/v2/users/\\d+/admission/\\d+$'), 'src.schemas.admission.patch_api_v2_users_id_admission_id', 'PatchApiV2UsersIdAdmissionIdResponse'),
-    ('PATCH', re.compile('^/api/v2/users/\\d+/calls/\\d+$'), 'src.schemas.users.patch_api_v2_users_id_calls_id', 'PatchApiV2UsersIdCallsIdResponse'),
-    ('POST', re.compile('^/api/v1/clients/\\d+/pets$'), 'src.schemas.clients.post_api_v1_clients_id_pets', 'PostApiV1ClientsIdPetsResponse'),
-    ('POST', re.compile('^/api/v2/categoriesproducts$'), 'src.schemas.categoriesproducts.post_api_v2_categoriesproducts', 'PostApiV2CategoriesproductsResponse'),
-    ('POST', re.compile('^/api/v2/clients$'), 'src.schemas.clients.post_api_v2_clients', 'PostApiV2ClientsResponse'),
-    ('POST', re.compile('^/api/v2/clients/\\d+/invoices$'), 'src.schemas.clients.post_api_v2_clients_id_invoices', 'PostApiV2ClientsIdInvoicesResponse'),
-    ('POST', re.compile('^/api/v2/clients/\\d+/medicalcards$'), 'src.schemas.clients.post_api_v2_clients_id_medicalcards', 'PostApiV2ClientsIdMedicalcardsResponse'),
-    ('POST', re.compile('^/api/v2/clients/\\d+/payments$'), 'src.schemas.clients.post_api_v2_clients_id_payments', 'PostApiV2ClientsIdPaymentsResponse'),
-    ('POST', re.compile('^/api/v2/combomanuals/cities$'), 'src.schemas.combomanuals.post_api_v2_combomanuals_cities', 'PostApiV2CombomanualsCitiesResponse'),
-    ('POST', re.compile('^/api/v2/combomanuals/streets$'), 'src.schemas.combomanuals.post_api_v2_combomanuals_streets', 'PostApiV2CombomanualsStreetsResponse'),
-    ('POST', re.compile('^/api/v2/diagnoses$'), 'src.schemas.diagnoses.post_api_v2_diagnoses', 'PostApiV2DiagnosesResponse'),
-    ('POST', re.compile('^/api/v2/products$'), 'src.schemas.products.post_api_v2_products', 'PostApiV2ProductsResponse'),
-    ('POST', re.compile('^/api/v2/users/admission/\\d+/confirm$'), 'src.schemas.admission.post_api_v2_users_admission_id_confirm', 'PostApiV2UsersAdmissionIdConfirmResponse'),
-    ('POST', re.compile('^/api/v2/users/settings/payment/\\d+$'), 'src.schemas.users.post_api_v2_users_settings_payment_id', 'PostApiV2UsersSettingsPaymentIdResponse'),
-    ('POST', re.compile('^/api/v2/users/\\d+/admission$'), 'src.schemas.admission.post_api_v2_users_id_admission', 'PostApiV2UsersIdAdmissionResponse'),
-    ('POST', re.compile('^/api/v2/users/\\d+/calls$'), 'src.schemas.users.post_api_v2_users_id_calls', 'PostApiV2UsersIdCallsResponse'),
-    ('POST', re.compile('^/token_auth\\.php$'), 'src.schemas.token_auth_php.post_token_auth_php', 'PostTokenAuthPhpResponse'),
-]
+from src.schemas.piv.get_admissions import GetAdmissionsResponse
+from src.schemas.piv.get_api_key_by_clinic_code import GetApiKeyByClinicCodeResponse
+from src.schemas.piv.get_articles import GetArticlesResponse
+from src.schemas.piv.get_client_by_phone import GetClientByPhoneResponse
+from src.schemas.piv.get_clinics import GetClinicsFlatResponse, GetClinicsResponse
+from src.schemas.piv.get_discount_card import GetDiscountCardListResponse, GetDiscountCardResponse
+from src.schemas.piv.get_domain_name import GetDomainNameResponse
+from src.schemas.piv.get_last_three_articles import GetLastThreeArticlesResponse
+from src.schemas.piv.get_phone_prefix import GetPhonePrefixResponse
+from src.schemas.piv.get_recomendations import GetRecomendationsResponse
+from src.schemas.piv.get_sms_check import GetSmsCheckResponse
+from src.schemas.piv.get_vaccinations import GetVaccinationsResponse
+from src.schemas.piv.post_event import PostEventResponse
+from src.schemas.piv.post_get_token import GetTokenResponse
+from src.schemas.piv.post_sms_send import PostSendSmsResponse
+
+PIV_RESPONSE_SCHEMAS = {
+    "/apiKey/byClinicCode": GetApiKeyByClinicCodeResponse,
+    "/clients/clientByPhone": GetClientByPhoneResponse,
+    "/getPhonePrefix": GetPhonePrefixResponse,
+    "/sms/send": PostSendSmsResponse,
+    "/sms/check": GetSmsCheckResponse,
+    "/domainName": GetDomainNameResponse,
+    "/admissions": GetAdmissionsResponse,
+    "/medicalCards/recomendations": GetRecomendationsResponse,
+    "/medicalCards/vaccinations": GetVaccinationsResponse,
+    "/clinics": (GetClinicsResponse, GetClinicsFlatResponse),
+    "/articles/lastThree": GetLastThreeArticlesResponse,
+    "/articles": GetArticlesResponse,
+    "/event": PostEventResponse,
+    "/discountCard": (GetDiscountCardResponse, GetDiscountCardListResponse),
+    "/token_auth.php": GetTokenResponse,
+}
+
+
+def _normalize_path(url) -> str:
+    path = urlparse(str(url)).path.rstrip("/") or "/"
+    for prefix in ("/api/v2", "/api/v1"):
+        if path.startswith(prefix):
+            path = path[len(prefix):] or "/"
+            break
+    return path
+
 
 def schema_for_response(response):
-    request = getattr(response, "request", None)
-    if request is None:
+    path = _normalize_path(response.url)
+    schema = PIV_RESPONSE_SCHEMAS.get(path)
+    if schema is None:
         return None
-    method = getattr(request, "method", "").upper()
-    path = urlparse(str(getattr(request, "url", ""))).path
-    for expected_method, pattern, module_name, class_name in SCHEMA_REGISTRY:
-        if method == expected_method and pattern.match(path):
-            module = import_module(module_name)
-            return getattr(module, class_name)
-    return None
+    if isinstance(schema, tuple):
+        body = response.json() if response.content else {}
+        data = body.get("data") if isinstance(body, dict) else None
+        if isinstance(data, list):
+            return schema[1]
+        if isinstance(data, dict) and "clinics" in data:
+            return schema[0]
+        if isinstance(data, dict) and "card" in data:
+            return schema[0]
+        if isinstance(data, dict) and "id" in data and "title" in data and "address" in data:
+            return schema[1]
+        return schema[0]
+    return schema

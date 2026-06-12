@@ -1,214 +1,101 @@
-import json
 import os
 
 import httpx
 from dotenv import load_dotenv
+
 from base.attach_curl import attach_response_info
 from base.response import Response
-from src.config.settings import base_settings
 
-# Загружаем .env из корня проекта (при запуске pytest из tests/users иначе не подхватится)
 _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(_project_root, ".env"))
 
 
 class ApiClient:
-    """
-    Базовый класс для работы с API.
-    Предоставляет общие методы для HTTP запросов и централизованное управление конфигурацией.
-    """
+    """Базовый HTTP-клиент: GET/POST, Allure, обёртка Response."""
 
-    def __init__(self, base_url: str = None, api_key: str = None, default_headers: dict = None):
-        """
-        Инициализация базового клиента API.
-
-        :param base_url: Базовый URL API. Если не указан, используется из base_settings
-        :param api_key: API ключ. Если не указан, берется из переменных окружения
-        :param default_headers: Заголовки по умолчанию. Если не указаны, используются стандартные
-        """
-        self.base_url = (base_url or base_settings.vm_url).rstrip('/')
-        # Токен: параметр > X_REST_API_KEY > X_TOKEN > TOKEN (из .env)
-        self.api_key = (
-            api_key
-            or os.getenv("X_REST_API_KEY")
-            or os.getenv("X_TOKEN")
-            or os.getenv("TOKEN")
-        )
-        self.errors = []
-
-        # Базовые заголовки по умолчанию (в т.ч. Client Hints — снижают риск 403 от Cloudflare в CI)
-        if default_headers is None:
-            default_headers = {
-                "accept": "application/json",
-                "Content-Type": "application/json",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Sec-CH-UA": '"Chromium";v="120", "Google Chrome";v="120", "Not_A Brand";v="24"',
-                "Sec-CH-UA-Mobile": "?0",
-                "Sec-CH-UA-Platform": '"Windows"',
-                "Accept-Language": "ru-RU,ru;q=0.9,en;q=0.8",
-            }
-
-        self.default_headers = default_headers.copy()
-
-        # Заголовки для mobilebackend.vetmanager.cloud (X-TOKEN, DOMAIN, X-MOBILE-APP, CLINIC-ID)
-        if self.api_key:
-            self.default_headers["X-TOKEN"] = self.api_key
-        _domain = os.getenv("DOMAIN")
-        if _domain:
-            self.default_headers["DOMAIN"] = _domain
-        _mobile_app = os.getenv("X_MOBILE_APP")
-        if _mobile_app:
-            self.default_headers["X-MOBILE-APP"] = _mobile_app
-        _clinic_id = os.getenv("CLINIC_ID")
-        if _clinic_id is not None and str(_clinic_id).strip() != "":
-            self.default_headers["CLINIC-ID"] = str(_clinic_id).strip()
+    def __init__(self, base_url: str, default_headers: dict = None):
+        if not base_url:
+            raise ValueError("base_url обязателен")
+        self.base_url = base_url.rstrip("/")
+        self.default_headers = (default_headers or {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+        }).copy()
 
     def _get_headers(self, headers: dict = None) -> dict:
-        """
-        Объединяет заголовки по умолчанию с переданными заголовками.
-
-        :param headers: Дополнительные заголовки
-        :return: Объединенные заголовки
-        """
-        merged_headers = self.default_headers.copy()
+        merged = self.default_headers.copy()
         if headers:
-            merged_headers.update(headers)
-        return merged_headers
+            merged.update(headers)
+        return merged
 
     def _build_url(self, endpoint: str) -> str:
-        """
-        Строит полный URL из базового URL и endpoint.
-
-        :param endpoint: Путь endpoint (может начинаться с / или без него)
-        :return: Полный URL
-        """
-        endpoint = endpoint.strip('/')
+        endpoint = endpoint.strip("/")
         return f"{self.base_url}/{endpoint}" if endpoint else self.base_url
 
-    def _handle_request_error(self, error: Exception, operation: str):
-        """
-        Обрабатывает ошибки при выполнении запросов.
-
-        :param error: Исключение, которое произошло
-        :param operation: Описание операции для логирования
-        """
-        error_msg = f"Ошибка при выполнении {operation}: {str(error)}"
-        self.errors.append(error_msg)
-        if isinstance(error, httpx.TimeoutException):
-            raise Exception(f"Timeout occurred during {operation}")
-        elif isinstance(error, httpx.RequestError):
-            raise Exception(f"Request error during {operation}: {str(error)}")
-        else:
-            raise Exception(error_msg)
-
     def _send_request(
-            self,
-            method: str,
-            url: str,
-            headers: dict = None,
-            params: dict = None,
-            json_data: dict = None,
-            data: dict = None,
-            timeout: float = 90
+        self,
+        method: str,
+        url: str,
+        headers: dict = None,
+        params: dict = None,
+        json_data: dict = None,
+        data: dict = None,
+        timeout: float = 90,
     ) -> Response:
-        """
-        Универсальный метод для отправки HTTP запросов.
-
-        :param method: HTTP метод (GET, POST, PUT, DELETE, PATCH)
-        :param url: Полный URL запроса
-        :param headers: Дополнительные заголовки
-        :param params: Query параметры (для GET запросов)
-        :param json_data: Данные для отправки в формате JSON
-        :param data: Данные для отправки в формате form-data
-        :param timeout: Таймаут запроса в секундах
-        :return: Объект Response
-        """
         merged_headers = self._get_headers(headers)
         method_upper = method.upper()
-        operation = f"{method_upper} {url}"
 
         try:
             if method_upper == "GET":
-                raw_response = httpx.get(url, headers=merged_headers, params=params, timeout=timeout)
+                raw_response = httpx.get(
+                    url, headers=merged_headers, params=params, timeout=timeout
+                )
             elif method_upper == "POST":
                 raw_response = httpx.post(
-                    url, headers=merged_headers, params=params, json=json_data, data=data, timeout=timeout
+                    url,
+                    headers=merged_headers,
+                    params=params,
+                    json=json_data,
+                    data=data,
+                    timeout=timeout,
                 )
-            elif method_upper == "PUT":
-                raw_response = httpx.put(
-                    url, headers=merged_headers, params=params, json=json_data, data=data, timeout=timeout
-                )
-            elif method_upper == "PATCH":
-                raw_response = httpx.patch(
-                    url, headers=merged_headers, params=params, json=json_data, data=data, timeout=timeout
-                )
-            elif method_upper == "DELETE":
-                # Для совместимости версий httpx отправляем DELETE через универсальный request().
-                delete_kwargs = {"headers": merged_headers, "params": params, "timeout": timeout}
-                if json_data is not None:
-                    delete_kwargs["content"] = json.dumps(json_data, ensure_ascii=False).encode("utf-8")
-                raw_response = httpx.request("DELETE", url, **delete_kwargs)
             else:
                 raise ValueError(f"Метод {method_upper} не поддерживается")
 
             attach_response_info(raw_response)
             return Response(raw_response)
 
-        except Exception as e:
-            self._handle_request_error(e, operation)
+        except httpx.TimeoutException as exc:
+            raise TimeoutError(f"Timeout: {method_upper} {url}") from exc
+        except httpx.RequestError as exc:
+            raise ConnectionError(f"Request error: {method_upper} {url}: {exc}") from exc
 
-    def get(self, endpoint: str, headers: dict = None, params: dict = None, timeout: float = 90) -> Response:
-        """Выполняет GET запрос"""
-        url = self._build_url(endpoint)
-        return self._send_request("GET", url, headers=headers, params=params, timeout=timeout)
-
-    def post(
-            self, endpoint: str, json_data: dict = None, data: dict = None,
-            headers: dict = None, params: dict = None, timeout: float = 90
-    ) -> Response:
-        """Выполняет POST запрос"""
-        url = self._build_url(endpoint)
-        return self._send_request("POST", url, headers=headers, params=params, json_data=json_data, data=data,
-                                  timeout=timeout)
-
-    def put(
-            self, endpoint: str, json_data: dict = None, data: dict = None,
-            headers: dict = None, params: dict = None, timeout: float = 90
-    ) -> Response:
-        """Выполняет PUT запрос"""
-        url = self._build_url(endpoint)
-        return self._send_request("PUT", url, headers=headers, params=params, json_data=json_data, data=data,
-                                  timeout=timeout)
-
-    def patch(
-            self, endpoint: str, json_data: dict = None, data: dict = None,
-            headers: dict = None, params: dict = None, timeout: float = 90
-    ) -> Response:
-        """Выполняет PATCH запрос"""
-        url = self._build_url(endpoint)
-        return self._send_request("PATCH", url, headers=headers, params=params, json_data=json_data, data=data,
-                                  timeout=timeout)
-
-    def delete(
+    def get(
         self,
         endpoint: str,
         headers: dict = None,
         params: dict = None,
-        json_data: dict = None,
         timeout: float = 90,
     ) -> Response:
-        """Выполняет DELETE запрос (опционально JSON body, как в Postman для products/categoriesproducts)."""
-        url = self._build_url(endpoint)
         return self._send_request(
-            "DELETE", url, headers=headers, params=params, json_data=json_data, timeout=timeout
+            "GET", self._build_url(endpoint), headers=headers, params=params, timeout=timeout
         )
 
-    def check_errors_during_test(self):
-        """
-        Проверяет наличие ошибок, накопленных во время выполнения теста.
-        Вызывает исключение, если есть ошибки.
-        """
-        if self.errors:
-            errors_copy = self.errors.copy()
-            self.errors.clear()
-            raise AssertionError(f"Во время выполнения теста возникли ошибки: {errors_copy}")
+    def post(
+        self,
+        endpoint: str,
+        json_data: dict = None,
+        data: dict = None,
+        headers: dict = None,
+        params: dict = None,
+        timeout: float = 90,
+    ) -> Response:
+        return self._send_request(
+            "POST",
+            self._build_url(endpoint),
+            headers=headers,
+            params=params,
+            json_data=json_data,
+            data=data,
+            timeout=timeout,
+        )
