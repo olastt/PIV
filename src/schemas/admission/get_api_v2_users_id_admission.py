@@ -55,7 +55,7 @@ class GetApiV2UsersIdAdmissionItem(StrictResponseModel):
     reception_write_channel: Any
     icon_reception_write_channel: Any
     wait_time: Any
-    pet_data: GetApiV2UsersIdAdmissionItemPetData
+    pet_data: Optional[GetApiV2UsersIdAdmissionItemPetData] = None
     client_data: GetApiV2UsersIdAdmissionItemClientData
     invoices_data: Optional[Any] = None
     doctor_data: GetApiV2UsersIdAdmissionItemDoctorData
