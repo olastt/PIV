@@ -1,0 +1,97 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ master, main ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * 1-5'
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Force Node.js 24
+        run: echo "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true" >> $GITHUB_ENV
+
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+
+      - name: Validate local .env exists
+        run: |
+          if [ ! -f .env ]; then
+            echo "ERROR: .env not found in repository root."
+            exit 1
+          fi
+
+      - name: Run tests
+        run: |
+          pytest tests/token/test_token_positive.py::TestTokenPositive::test_get_token_and_save_api_key --tb=no -q 2>&1 | tee pytest-output.txt
+          pytest tests/apikey tests/articles tests/clients tests/clinics tests/discount_card tests/domain_name tests/events tests/medicalcards tests/phone_prefix tests/piv_admissions tests/sms tests/token --tb=no -q -k "not test_get_token_and_save_api_key" 2>&1 | tee -a pytest-output.txt
+        continue-on-error: true
+
+      - name: Parse test results
+        run: |
+          PASSED=$(grep -oP '\d+(?= passed)' pytest-output.txt | awk '{s+=$1} END {print s+0}')
+          FAILED=$(grep -oP '\d+(?= failed)' pytest-output.txt | awk '{s+=$1} END {print s+0}')
+          ERROR=$(grep -oP '\d+(?= error)' pytest-output.txt | awk '{s+=$1} END {print s+0}')
+          FAILED_TESTS=$(grep -E "^FAILED" pytest-output.txt | sed 's/FAILED //' | sed 's/ - .*//' | head -20 | tr '\n' '|' || echo "")
+          echo "PASSED=${PASSED}" >> $GITHUB_ENV
+          echo "FAILED=${FAILED}" >> $GITHUB_ENV
+          echo "ERROR=${ERROR}" >> $GITHUB_ENV
+          echo "FAILED_TESTS=${FAILED_TESTS}" >> $GITHUB_ENV
+
+      - name: Generate Allure report
+        uses: simple-elf/allure-report-action@master
+        with:
+          allure_results: allure-results
+          keep_reports: 1
+
+      - name: Install Surge
+        run: npm install -g surge
+
+      - name: Deploy to Surge
+        run: surge allure-report ${{ secrets.SURGE_DOMAIN }} --token ${{ secrets.SURGE_TOKEN }}
+        continue-on-error: true
+
+      - name: Send Bitrix24 notification
+        continue-on-error: true
+        run: |
+          python3 - <<'EOF'
+          import os, urllib.request, urllib.parse
+          passed = os.environ.get('PASSED', '0')
+          failed = os.environ.get('FAILED', '0')
+          error = os.environ.get('ERROR', '0')
+          failed_tests = os.environ.get('FAILED_TESTS', '')
+          report_url = "https://${{ secrets.SURGE_DOMAIN }}"
+          webhook = "${{ secrets.BITRIX_WEBHOOK_URL }}"
+          chat_id = "${{ secrets.BITRIX_CHAT_ID }}"
+          failed_list = '\n'.join([t for t in failed_tests.split('|') if t.strip()])
+          message = (
+              f"PIV - Автотесты API прогнаны!\n"
+              f"✅ Passed: {passed}\n"
+              f"❌ Failed: {failed}\n"
+              f"⚠️ Errors: {error}\n"
+          )
+          if failed_list:
+              message += f"\nУпавшие тесты:\n{failed_list}\n"
+          message += f"\n📊 Отчёт: {report_url}"
+          data = urllib.parse.urlencode({'DIALOG_ID': chat_id, 'MESSAGE': message}).encode()
+          req = urllib.request.Request(webhook + 'im.message.add', data=data)
+          resp = urllib.request.urlopen(req)
+          print(resp.read().decode())
+          EOF
