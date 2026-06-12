@@ -24,33 +24,26 @@
 ### 1. Клонирование репозитория
 
 ```bash
-git clone https://github.com/olastt/mobile-
-cd mobile-
+git clone https://gitlab.vetmanager.cloud/vetmanager/api-tests-mobile-backend
+cd api-tests-mobile-backend
 ```
 
 ### 2. Настройка виртуального окружения
 
 ```bash
-python -m venv .venv
-```
-
-```bash
-.venv\Scripts\activate     # Windows
-```
-
-### 3.Установка зависимостей
-
-```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
+
 ```
 
-### 4. Настройка переменных окружения
+### 3. Настройка переменных окружения
 
 ```bash
 cp .env.example .env
 ```
 
-### 5. Заполните необходимые переменные:
+### 4. Заполните необходимые переменные:
 
 LOGIN=your_login
 PASSWORD=your_password
