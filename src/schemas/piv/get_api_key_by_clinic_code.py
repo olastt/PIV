@@ -1,13 +1,13 @@
-from typing import Any, List, Optional
+from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr, StrictBool
 
 from src.schemas.piv.common import StrictResponseModel
 
 
 class GetApiKeyByClinicCodeData(StrictResponseModel):
-    apiKey: Any
+    apiKey: StrictStr
 
 
 class GetApiKeyByClinicCodeResponse(StrictResponseModel):
-    success: Any
-    message: Any
+    success: StrictBool
+    message: StrictStr
     data: GetApiKeyByClinicCodeData

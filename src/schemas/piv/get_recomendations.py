@@ -1,30 +1,30 @@
-from typing import Any, List, Optional
+from pydantic import Field, StrictBool, StrictInt, StrictStr
 
 from src.schemas.piv.common import StrictResponseModel
 
 
 class GetRecomendationsAttachment(StrictResponseModel):
-    type: Any
-    url: Any
+    type: StrictStr
+    url: StrictStr
 
 
 class GetRecomendationsItem(StrictResponseModel):
-    id: Any
-    content: Any
-    date: Any
-    petName: Any
-    petType: Any
-    doctorFIO: Any
-    media: Optional[Any] = None
-    attachments_data: Optional[List[GetRecomendationsAttachment]] = None
+    id: StrictStr
+    content: StrictStr
+    date: StrictStr
+    petName: StrictStr
+    petType: StrictStr
+    doctorFIO: StrictStr
+    media: list = Field(default_factory=list)
+    attachments_data: list[GetRecomendationsAttachment] | None = None
 
 
 class GetRecomendationsData(StrictResponseModel):
-    totalCount: Any
-    recomendation: List[GetRecomendationsItem]
+    totalCount: StrictInt
+    recomendation: list[GetRecomendationsItem]
 
 
 class GetRecomendationsResponse(StrictResponseModel):
-    success: Any
-    message: Any
+    success: StrictBool
+    message: StrictStr
     data: GetRecomendationsData

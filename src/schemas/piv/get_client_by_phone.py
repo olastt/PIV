@@ -1,13 +1,13 @@
-from typing import Any
+from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr, StrictBool
 
 from src.schemas.piv.common import StrictResponseModel
 
 
 class GetClientByPhoneData(StrictResponseModel):
-    client_id: Any
+    client_id: StrictInt
 
 
 class GetClientByPhoneResponse(StrictResponseModel):
-    success: Any
-    message: Any
+    success: StrictBool
+    message: StrictStr
     data: GetClientByPhoneData

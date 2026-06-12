@@ -14,6 +14,9 @@ __pycache__/
 *.pyc
 *.pyo
 
+# Runtime tokens accidentally written to wrong path (use root .env)
+base/.env
+
 # IDE
 .idea/
 .vscode/

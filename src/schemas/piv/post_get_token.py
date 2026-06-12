@@ -1,20 +1,16 @@
-from typing import Any
+from pydantic import StrictInt, StrictStr
 
-from pydantic import BaseModel, ConfigDict
-
-
-class GetTokenData(BaseModel):
-    model_config = ConfigDict(extra="allow")
-
-    service: Any
-    token: Any
-    user_id: Any
+from src.schemas.piv.common import StrictResponseModel
 
 
-class GetTokenResponse(BaseModel):
-    model_config = ConfigDict(extra="allow")
+class GetTokenData(StrictResponseModel):
+    service: StrictStr
+    token: StrictStr
+    user_id: StrictStr
 
-    status: Any
-    title: Any
-    detail: Any
+
+class GetTokenResponse(StrictResponseModel):
+    status: StrictInt
+    title: StrictStr
+    detail: StrictStr
     data: GetTokenData

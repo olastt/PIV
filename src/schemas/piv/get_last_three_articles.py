@@ -1,16 +1,16 @@
-from typing import Any, List
+from pydantic import StrictInt, StrictStr
 
 from src.schemas.piv.common import StrictResponseModel
 
 
 class GetLastThreeArticlesItem(StrictResponseModel):
-    id: Any
-    domain: Any
-    title: Any
-    content: Any
-    created_at: Any
-    updated_at: Any
+    id: StrictInt
+    domain: StrictStr
+    title: StrictStr
+    content: StrictStr
+    created_at: StrictStr
+    updated_at: StrictStr
 
 
 class GetLastThreeArticlesResponse(StrictResponseModel):
-    articles: List[GetLastThreeArticlesItem]
+    articles: list[GetLastThreeArticlesItem]

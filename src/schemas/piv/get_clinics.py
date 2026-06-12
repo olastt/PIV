@@ -1,35 +1,34 @@
-from typing import Any, List, Optional
+from pydantic import StrictBool, StrictInt, StrictStr
 
 from src.schemas.piv.common import StrictResponseModel
 
 
 class GetClinicsCity(StrictResponseModel):
-    title: Any
+    title: StrictStr
 
 
 class GetClinicsItem(StrictResponseModel):
-    id: Any
-    title: Any
-    address: Any
-    phone: Any
-    start_time: Any
-    end_time: Any
+    id: StrictStr
+    title: StrictStr
+    address: StrictStr
+    phone: StrictStr
+    start_time: StrictStr
+    end_time: StrictStr
     city: GetClinicsCity
 
 
 class GetClinicsData(StrictResponseModel):
-    totalCount: Any
-    clinics: List[GetClinicsItem]
+    totalCount: StrictInt
+    clinics: list[GetClinicsItem]
 
 
 class GetClinicsResponse(StrictResponseModel):
-    success: Any
-    message: Any
+    success: StrictBool
+    message: StrictStr
     data: GetClinicsData
 
 
 class GetClinicsFlatResponse(StrictResponseModel):
-    """Альтернативный формат ответа /clinics из Postman-примеров."""
-    success: Any
-    message: Any
+    success: StrictBool
+    message: StrictStr
     data: GetClinicsItem

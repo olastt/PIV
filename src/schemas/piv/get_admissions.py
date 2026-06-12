@@ -1,30 +1,30 @@
-from typing import Any, List, Optional
+from pydantic import StrictBool, StrictInt, StrictStr
 
 from src.schemas.piv.common import StrictResponseModel
 
 
 class GetAdmissionsPet(StrictResponseModel):
-    type: Any
-    alias: Any
-    pet_type_title: Any
+    type: StrictStr
+    alias: StrictStr
+    pet_type_title: StrictStr
 
 
 class GetAdmissionsItem(StrictResponseModel):
-    admission_id: Any
-    admission_date: Any
-    status: Any
-    title_type: Any
+    admission_id: StrictStr
+    admission_date: StrictStr
+    status: StrictStr
+    title_type: StrictStr
     pet: GetAdmissionsPet
-    doctorFIO: Any
-    description: Any
+    doctorFIO: StrictStr
+    description: StrictStr
 
 
 class GetAdmissionsData(StrictResponseModel):
-    totalCount: Any
-    admission: List[GetAdmissionsItem]
+    totalCount: StrictInt
+    admission: list[GetAdmissionsItem]
 
 
 class GetAdmissionsResponse(StrictResponseModel):
-    success: Any
-    message: Any
+    success: StrictBool
+    message: StrictStr
     data: GetAdmissionsData

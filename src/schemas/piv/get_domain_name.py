@@ -1,13 +1,13 @@
-from typing import Any
+from pydantic import StrictBool, StrictStr
 
 from src.schemas.piv.common import StrictResponseModel
 
 
 class GetDomainNameData(StrictResponseModel):
-    domain_name: Any
+    domain_name: StrictStr
 
 
 class GetDomainNameResponse(StrictResponseModel):
-    success: Any
-    message: Any
+    success: StrictBool
+    message: StrictStr
     data: GetDomainNameData

@@ -1,38 +1,37 @@
-from typing import Any, List, Optional
+from pydantic import StrictBool, StrictInt, StrictStr
 
 from src.schemas.piv.common import StrictResponseModel
 
 
 class GetDiscountCardItem(StrictResponseModel):
-    id: Any
-    pet_id: Any
-    title: Any
-    number: Any
-    create_date: Any
-    card_type: Any
-    is_default: Any
-    end_date: Any
-    start_date: Any
+    id: StrictInt
+    pet_id: StrictInt
+    title: StrictStr
+    number: StrictInt
+    create_date: StrictStr
+    card_type: StrictStr
+    is_default: StrictBool
+    end_date: StrictStr
+    start_date: StrictStr
 
 
 class GetDiscountCardGroup(StrictResponseModel):
-    totalCount: Any
-    card: List[GetDiscountCardItem]
+    totalCount: StrictInt
+    card: list[GetDiscountCardItem]
 
 
 class GetDiscountCardData(StrictResponseModel):
-    totalCount: Any
-    card: List[GetDiscountCardItem]
+    totalCount: StrictInt
+    card: list[GetDiscountCardItem]
 
 
 class GetDiscountCardResponse(StrictResponseModel):
-    success: Any
-    message: Any
+    success: StrictBool
+    message: StrictStr
     data: GetDiscountCardData
 
 
 class GetDiscountCardListResponse(StrictResponseModel):
-    """Альтернативный формат: data как список групп карт."""
-    success: Any
-    message: Any
-    data: List[GetDiscountCardGroup]
+    success: StrictBool
+    message: StrictStr
+    data: list[GetDiscountCardGroup]

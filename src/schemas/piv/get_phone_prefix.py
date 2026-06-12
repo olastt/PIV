@@ -1,13 +1,13 @@
-from typing import Any
+from pydantic import StrictBool, StrictInt, StrictStr
 
 from src.schemas.piv.common import StrictResponseModel
 
 
 class GetPhonePrefixData(StrictResponseModel):
-    prefix: Any
+    prefix: StrictInt
 
 
 class GetPhonePrefixResponse(StrictResponseModel):
-    success: Any
-    message: Any
+    success: StrictBool
+    message: StrictStr
     data: GetPhonePrefixData

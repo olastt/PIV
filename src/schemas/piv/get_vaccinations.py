@@ -1,33 +1,32 @@
-from typing import Any, List, Optional
+from pydantic import StrictBool, StrictInt, StrictStr
 
 from src.schemas.piv.common import StrictResponseModel
 
 
 class GetVaccinationsPet(StrictResponseModel):
-    type: Any
-    alias: Any
-    pet_type_title: Any
+    type: StrictStr
+    alias: StrictStr
+    pet_type_title: StrictStr
 
 
 class GetVaccinationsItem(StrictResponseModel):
-    medcard_id: Any
-    vaccine_id: Any
-    vaccination_date: Any
-    date_nexttime: Any
-    vaccine_type_title: Any
-    name: Any
+    medcard_id: StrictStr
+    vaccine_id: StrictStr
+    vaccination_date: StrictStr
+    date_nexttime: StrictStr
+    vaccine_type_title: StrictStr
+    name: StrictStr
     pet: GetVaccinationsPet
-    type_id: Any
-    vaccine_description: Optional[Any] = None
+    type_id: StrictStr
+    vaccine_description: dict | None = None
 
 
 class GetVaccinationsData(StrictResponseModel):
-    totalCount: Any
-    # API возвращает массив групп: [[{...}], [{...}]]
-    vaccination: List[List[GetVaccinationsItem]]
+    totalCount: StrictInt
+    vaccination: list[list[GetVaccinationsItem]]
 
 
 class GetVaccinationsResponse(StrictResponseModel):
-    success: Any
-    message: Any
+    success: StrictBool
+    message: StrictStr
     data: GetVaccinationsData
