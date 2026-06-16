@@ -51,10 +51,10 @@ def _build_message(
     failures: list[dict],
 ) -> str:
     message = (
-        f"{platform_label} - Автотесты API прогнаны!\n"
-        f"Passed: {passed}\n"
-        f"Failed: {failed}\n"
-        f"Errors: {error}\n"
+        f"🚀 {platform_label} - Автотесты API прогнаны!\n\n"
+        f"✅ Passed: {passed}\n"
+        f"❌ Failed: {failed}\n"
+        f"⚠️ Errors: {error}\n"
     )
 
     if failures:
@@ -67,7 +67,7 @@ def _build_message(
         failed_list = "\n".join(item for item in failed_tests.split("|") if item.strip())
         message += f"\nУпавшие тесты:\n{failed_list}\n"
 
-    message += f"\nОтчёт: {report_url}"
+    message += f"\n📊 Отчёт: {report_url}"
     return message
 
 
