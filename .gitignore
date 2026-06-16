@@ -9,6 +9,10 @@ allure-results/
 allureress/
 allure-report/
 
+# CI artifacts
+test-artifacts/
+pytest-output.txt
+
 # Python
 __pycache__/
 *.pyc

@@ -38,10 +38,13 @@ jobs:
             exit 1
           fi
 
+      - name: Save start time
+        run: date +%s > start_time.txt
+
       - name: Run tests
         run: |
-          pytest tests/token/test_token_positive.py::TestTokenPositive::test_get_token_and_save_api_key --tb=no -q 2>&1 | tee pytest-output.txt
-          pytest tests/apikey tests/articles tests/clients tests/clinics tests/discount_card tests/domain_name tests/events tests/medicalcards tests/phone_prefix tests/piv_admissions tests/sms tests/token --tb=no -q -k "not test_get_token_and_save_api_key" 2>&1 | tee -a pytest-output.txt
+          pytest tests/token/test_token_positive.py::TestTokenPositive::test_get_token_and_save_api_key --alluredir=allure-results --tb=no -q 2>&1 | tee pytest-output.txt
+          pytest tests/apikey tests/articles tests/clients tests/clinics tests/discount_card tests/domain_name tests/events tests/medicalcards tests/phone_prefix tests/piv_admissions tests/sms tests/token --alluredir=allure-results --tb=no -q -k "not test_get_token_and_save_api_key" 2>&1 | tee -a pytest-output.txt
         continue-on-error: true
 
       - name: Parse test results
@@ -50,7 +53,6 @@ jobs:
           FAILED=$(grep -oP '\d+(?= failed)' pytest-output.txt | awk '{s+=$1} END {print s+0}')
           ERROR=$(grep -oP '\d+(?= error)' pytest-output.txt | awk '{s+=$1} END {print s+0}')
           FAILED_TESTS=$(grep -E "^FAILED" pytest-output.txt | sed 's/FAILED //' | sed 's/ - .*//' | head -20 | tr '\n' '|' || echo "")
-
           echo "PASSED=${PASSED}" >> $GITHUB_ENV
           echo "FAILED=${FAILED}" >> $GITHUB_ENV
           echo "ERROR=${ERROR}" >> $GITHUB_ENV
@@ -63,7 +65,7 @@ jobs:
           keep_reports: 1
 
       - name: Install Surge
-        run: npm install -g surge
+        run: npm install -g surge@latest
 
       - name: Deploy to Surge
         run: surge allure-report ${{ secrets.SURGE_DOMAIN }} --token ${{ secrets.SURGE_TOKEN }}
@@ -71,54 +73,14 @@ jobs:
 
       - name: Send Bitrix24 notification
         continue-on-error: true
+        env:
+          BITRIX_WEBHOOK_URL: ${{ secrets.BITRIX_WEBHOOK_URL }}
+          BITRIX_CHAT_ID: ${{ secrets.BITRIX_CHAT_ID }}
+          PASSED: ${{ env.PASSED }}
+          FAILED: ${{ env.FAILED }}
+          ERROR: ${{ env.ERROR }}
+          FAILED_TESTS: ${{ env.FAILED_TESTS }}
         run: |
-          python3 - <<'EOF'
-          import os
-          import urllib.request
-          import urllib.parse
-
-          passed = os.environ.get("PASSED", "0")
-          failed = os.environ.get("FAILED", "0")
-          error = os.environ.get("ERROR", "0")
-          failed_tests = os.environ.get("FAILED_TESTS", "")
-
-          report_url = "https://${{ secrets.SURGE_DOMAIN }}"
-          webhook = "${{ secrets.BITRIX_WEBHOOK_URL }}".rstrip("/")
-          chat_id = "${{ secrets.BITRIX_CHAT_ID }}"
-
-          failed_list = "\n".join(
-              [t for t in failed_tests.split("|") if t.strip()]
-          )
-
-          message = (
-              f"🚀 PIV - Автотесты API прогнаны!\n\n"
-              f"✅ Passed: {passed}\n"
-              f"❌ Failed: {failed}\n"
-              f"⚠️ Errors: {error}\n"
-          )
-
-          if failed_list:
-              message += f"\nУпавшие тесты:\n{failed_list}\n"
-
-          message += f"\n📊 Отчёт: {report_url}"
-
-          url = f"{webhook}/im.message.add.json"
-
-          print(f"Sending to chat: {chat_id}")
-          print("Sending Bitrix request...")
-
-          data = urllib.parse.urlencode({
-              "DIALOG_ID": chat_id,
-              "MESSAGE": message
-          }).encode("utf-8")
-
-          req = urllib.request.Request(url, data=data)
-
-          try:
-              with urllib.request.urlopen(req) as resp:
-                  print(resp.read().decode())
-          except Exception as e:
-              print("BITRIX ERROR:", str(e))
-              raise
-
-          EOF
+          python3 scripts/bitrix_notify.py \
+            --platform-label "PIV" \
+            --report-url "https://${{ secrets.SURGE_DOMAIN }}"

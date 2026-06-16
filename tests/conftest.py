@@ -7,6 +7,7 @@ load_dotenv(os.path.join(_project_root, ".env"))
 
 import pytest
 
+from base.failure_report import init_failures_file, report_test_failure
 from base.methods.apikey.apikey_start import ApikeyStart
 from base.methods.articles.articles_start import ArticlesStart
 from base.methods.clients.clients_start import ClientsStart
@@ -19,6 +20,26 @@ from base.methods.phone_prefix.phone_prefix_start import PhonePrefixStart
 from base.methods.piv_admissions.piv_admissions_start import PivAdmissionsStart
 from base.methods.sms.sms_start import SmsStart
 from base.methods.token.token_start import TokenStart
+from base.request_context import begin_test
+
+
+@pytest.fixture(scope="session", autouse=True)
+def init_failure_artifacts():
+    init_failures_file()
+
+
+@pytest.fixture(autouse=True)
+def reset_http_context():
+    begin_test()
+    yield
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+    if report.when == "call" and report.failed:
+        report_test_failure(item.nodeid, str(report.longrepr))
 
 
 @pytest.fixture(scope="session", autouse=True)
