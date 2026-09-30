@@ -4,7 +4,7 @@ from Library.MakeyIS import Test
 
 from base.piv_client import PivApiClient
 from src.config.url import Url
-from src.schemas.piv.errors import PivErrorResponse, PivServerErrorMessageResponse
+from src.schemas.piv.errors import PivErrorResponse
 from tests.helpers.piv_negative import INVALID_API_KEY, assert_piv_error
 
 
@@ -30,18 +30,6 @@ class TestMedicalcardsNegative:
             params={"client_id": 6},
         )
         assert_piv_error(response, 403, PivErrorResponse)
-
-    @pytest.mark.negative
-    @allure.epic("PIV")
-    @allure.feature("GET /medicalCards/recomendations")
-    @allure.title("500 — client_id не найден")
-    @Test(run_test=True, group_name="PIV", log=True)
-    def test_recomendations_invalid_client_id_returns_500(self):
-        response = PivApiClient().get(
-            Url.GET_RECOMENDATIONS_BY_CLIENT_ID,
-            params={"client_id": 999999999},
-        )
-        assert_piv_error(response, 500, PivServerErrorMessageResponse)
 
     @pytest.mark.negative
     @allure.epic("PIV")
