@@ -42,7 +42,7 @@ def test_empty_or_nonstring_key_is_rejected(value):
         assert_nonempty_string(value, "apiKey")
 
 
-@pytest.mark.parametrize("content,media_type", [(b"not json", "application/json"), (b'{"success":true}', "text/html"), (b"", "application/json")])
+@pytest.mark.parametrize("content,media_type", [(b"not json", "application/json"), (b'{"success":true}', "text/html"), (b"", "application/json")], ids=["invalid-json", "non-json-header", "empty-body"])
 def test_invalid_json_or_media_type_is_rejected(content, media_type):
     wrapped = Response(httpx.Response(200, content=content, headers={"content-type": media_type}))
     # Пустое тело не должно пройти схему/проверку success даже если парсер вернул {}.
@@ -155,3 +155,14 @@ def test_duplicate_articles_within_page_size_are_rejected():
     body.update(per_page="2", data=[{"id": 1}, {"id": 1}], to=2)
     with pytest.raises(AssertionError, match="повторяющиеся"):
         assert_articles_pagination(response(body), page=1, size=2)
+
+
+def test_articles_accepts_json_with_html_header_during_temporary_exception():
+    wrapped = Response(httpx.Response(200, json=PAGE, headers={"content-type": "text/html; charset=UTF-8"}))
+    assert_articles_pagination(wrapped, page=1, size=1)
+
+
+def test_articles_still_rejects_invalid_json_with_html_header():
+    wrapped = Response(httpx.Response(200, content=b"<html>Not JSON</html>", headers={"content-type": "text/html"}))
+    with pytest.raises(AssertionError, match="JSON"):
+        assert_articles_pagination(wrapped, page=1, size=1)

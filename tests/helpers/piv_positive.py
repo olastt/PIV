@@ -1,9 +1,10 @@
 """Проверки значений ответа поверх существующих Pydantic-схем."""
 
 
-def assert_json_body(response):
-    media_type = response.response_headers.get("content-type", "").split(";", 1)[0].strip().lower()
-    assert media_type == "application/json" or media_type.endswith("+json"), "Ожидался JSON Content-Type"
+def assert_json_body(response, *, check_content_type=True):
+    if check_content_type:
+        media_type = response.response_headers.get("content-type", "").split(";", 1)[0].strip().lower()
+        assert media_type == "application/json" or media_type.endswith("+json"), "Ожидался JSON Content-Type"
     assert response.response_json is not None, "Ответ должен содержать валидный JSON"
     return response.response_json
 
@@ -26,7 +27,8 @@ def assert_collection_count(data, items_field):
 
 
 def assert_articles_pagination(response, page, size):
-    body = assert_json_body(response)
+    # Временно по запросу QA: вернуть проверку Content-Type после исправления /articles.
+    body = assert_json_body(response, check_content_type=False)
     assert body["current_page"] == page, "Вернулась другая страница"
     assert str(body["per_page"]) == str(size), "Вернулся другой размер страницы"
     assert len(body["data"]) <= size, "Количество статей превышает size"

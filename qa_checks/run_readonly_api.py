@@ -169,6 +169,8 @@ def main(priority=False, case=None, qa_data=None, swagger=None):
             targets = ["tests/data_cases"]
         elif case == "discount-switch":
             targets = ["tests/data_cases/test_populated_client.py::test_switch_populated_empty_populated_client[/discountCard-card]"]
+        elif case == "articles":
+            targets = ["tests/articles/test_articles_positive.py::TestArticlesPositive::test_get_articles"]
         elif case == "swagger-audit":
             assert contract, "Нужен путь --swagger"
             targets = TARGETS
@@ -194,6 +196,7 @@ def main(priority=False, case=None, qa_data=None, swagger=None):
             "discount-switch": "readonly-discount-switch-results.json",
             "swagger-audit": "readonly-swagger-audit-results.json",
             "swagger-details": "readonly-swagger-details-results.json",
+            "articles": "readonly-articles-results.json",
         }[case]
     (ROOT / "test-artifacts" / filename).write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
     if case == "swagger-audit":
@@ -211,7 +214,7 @@ def main(priority=False, case=None, qa_data=None, swagger=None):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--priority", action="store_true", help="Только новые приоритетные сценарии и client lookup")
-    parser.add_argument("--case", choices=["apikey", "client-data", "discount-switch", "swagger-audit", "swagger-details"], help="Отдельная группа GET-проверок")
+    parser.add_argument("--case", choices=["apikey", "client-data", "discount-switch", "swagger-audit", "swagger-details", "articles"], help="Отдельная группа GET-проверок")
     parser.add_argument("--qa-data", help="JSON с подготовленными тестовыми клиентами")
     parser.add_argument("--swagger", help="Предоставленный OpenAPI YAML")
     args = parser.parse_args()
