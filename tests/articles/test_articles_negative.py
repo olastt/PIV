@@ -25,7 +25,15 @@ class TestArticlesNegative:
     @Test(run_test=True, group_name="PIV", log=True)
     def test_articles_missing_pagination_returns_422(self):
         response = PivApiClient().get(Url.GET_ARTICLES)
-        assert_piv_error(response, 422, PivValidation422Response)
+        assert_piv_error(response, 422, PivValidation422Response, required_fields=("page", "size"))
+
+    @pytest.mark.negative
+    @allure.epic("PIV")
+    @allure.feature("GET /articles")
+    @pytest.mark.parametrize("params,missing_field", [({"page": 1}, "size"), ({"size": 10}, "page")])
+    def test_articles_missing_one_pagination_field_returns_422(self, params, missing_field):
+        response = PivApiClient().get(Url.GET_ARTICLES, params=params)
+        assert_piv_error(response, 422, PivValidation422Response, required_fields=(missing_field,))
 
     @pytest.mark.negative
     @allure.epic("PIV")

@@ -1,3 +1,5 @@
+import os
+
 import allure
 import pytest
 from Library.MakeyIS import Test
@@ -27,5 +29,8 @@ class TestTokenNegative:
     @allure.title("401 — отсутствует app_name")
     @Test(run_test=True, group_name="PIV", log=True)
     def test_missing_app_name_returns_401(self):
-        response = TokenMethods().get_token(login="admin", password="123456qq")
+        login = os.getenv("LOGIN_PIV") or os.getenv("LOGIN")
+        password = os.getenv("PASSWORD_PIV") or os.getenv("PASSWORD")
+        assert login and password, "Для проверки отсутствия app_name нужны валидные credentials"
+        response = TokenMethods().get_token(login=login, password=password)
         assert_piv_error(response, 401, TokenUnauthorizedResponse)
