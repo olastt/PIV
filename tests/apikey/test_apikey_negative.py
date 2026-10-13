@@ -16,8 +16,7 @@ class TestApikeyNegative:
     @Test(run_test=True, group_name="PIV", log=True)
     def test_missing_code_returns_400(self):
         response = ApikeyMethods().get(Url.GET_API_KEY_BY_CLINIC_CODE)
-        assert_piv_error(response, 400, PivErrorResponse)
-        assert "code" in response.response_json[0]["message"].lower()
+        assert_piv_error(response, 400, PivErrorResponse, required_fields=("code",))
 
     @pytest.mark.negative
     @allure.epic("PIV")

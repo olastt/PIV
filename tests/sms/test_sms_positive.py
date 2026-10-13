@@ -4,6 +4,8 @@ import allure
 import pytest
 from Library.MakeyIS import Test
 
+from tests.helpers.piv_positive import assert_piv_success
+
 
 class TestSmsPositive:
     @pytest.mark.positive
@@ -12,7 +14,7 @@ class TestSmsPositive:
     @allure.title("Отправка SMS")
     @Test(run_test=True, group_name="PIV", log=True)
     def test_send_sms(self, sms_start):
-        sms_start.send_sms(json_data={"phone": "79184140259"})
+        assert_piv_success(sms_start.send_sms(json_data={"phone": "79184140259"}))
 
     # @pytest.mark.positive
     # @allure.epic("PIV")

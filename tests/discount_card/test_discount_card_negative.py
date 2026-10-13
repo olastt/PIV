@@ -16,8 +16,7 @@ class TestDiscountCardNegative:
     @Test(run_test=True, group_name="PIV", log=True)
     def test_missing_client_id_returns_400(self):
         response = PivApiClient().get(Url.GET_DISCOUNT_CARDS)
-        assert_piv_error(response, 400, PivErrorResponse)
-        assert "client_id" in response.response_json[0]["message"].lower()
+        assert_piv_error(response, 400, PivErrorResponse, required_fields=("client_id",))
 
     @pytest.mark.negative
     @allure.epic("PIV")
