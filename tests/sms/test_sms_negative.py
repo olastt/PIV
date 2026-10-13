@@ -16,8 +16,7 @@ class TestSmsNegative:
     @Test(run_test=True, group_name="PIV", log=True)
     def test_send_sms_missing_phone_returns_400(self):
         response = PivApiClient().post(Url.POST_SEND_SMS, json_data={})
-        assert_piv_error(response, 400, PivErrorResponse)
-        assert "phone" in response.response_json[0]["message"].lower()
+        assert_piv_error(response, 400, PivErrorResponse, required_fields=("phone",))
 
     @pytest.mark.negative
     @allure.epic("PIV")
@@ -38,8 +37,7 @@ class TestSmsNegative:
     @Test(run_test=True, group_name="PIV", log=True)
     def test_check_sms_missing_phone_returns_400(self):
         response = PivApiClient().get(Url.GET_SMS_CHECK)
-        assert_piv_error(response, 400, PivErrorResponse)
-        assert "phone" in response.response_json[0]["message"].lower()
+        assert_piv_error(response, 400, PivErrorResponse, required_fields=("phone",))
 
     @pytest.mark.negative
     @allure.epic("PIV")
@@ -51,8 +49,7 @@ class TestSmsNegative:
             Url.GET_SMS_CHECK,
             params={"phone": "79184140259"},
         )
-        assert_piv_error(response, 400, PivErrorResponse)
-        assert "code" in response.response_json[0]["message"].lower()
+        assert_piv_error(response, 400, PivErrorResponse, required_fields=("code",))
 
     @pytest.mark.negative
     @allure.epic("PIV")

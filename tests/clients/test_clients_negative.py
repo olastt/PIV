@@ -16,8 +16,7 @@ class TestClientsNegative:
     @Test(run_test=True, group_name="PIV", log=True)
     def test_missing_phone_returns_400(self):
         response = PivApiClient().get(Url.GET_CLIENT_BY_PHONE)
-        assert_piv_error(response, 400, PivErrorResponse)
-        assert "phone" in response.response_json[0]["message"].lower()
+        assert_piv_error(response, 400, PivErrorResponse, required_fields=("phone",))
 
     @pytest.mark.negative
     @allure.epic("PIV")

@@ -2,6 +2,8 @@ import allure
 import pytest
 from Library.MakeyIS import Test
 
+from tests.helpers.piv_positive import assert_piv_success
+
 
 class TestClientsPositive:
     @pytest.mark.positive
@@ -10,4 +12,5 @@ class TestClientsPositive:
     @allure.title("Проверка клиента по номеру телефона")
     @Test(run_test=True, group_name="PIV", log=True)
     def test_get_client_by_phone(self, clients_start):
-        clients_start.get_client_by_phone("9184140259")
+        body = assert_piv_success(clients_start.get_client_by_phone())
+        assert body["data"]["client_id"] > 0, "client_id должен быть положительным"

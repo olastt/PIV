@@ -16,8 +16,7 @@ class TestEventsNegative:
     @Test(run_test=True, group_name="PIV", log=True)
     def test_missing_device_id_returns_400(self):
         response = PivApiClient().post(Url.POST_EVENT, json_data={})
-        assert_piv_error(response, 400, PivErrorResponse)
-        assert "device_id" in response.response_json[0]["message"].lower()
+        assert_piv_error(response, 400, PivErrorResponse, required_fields=("device_id",))
 
     @pytest.mark.negative
     @allure.epic("PIV")
@@ -26,8 +25,7 @@ class TestEventsNegative:
     @Test(run_test=True, group_name="PIV", log=True)
     def test_missing_title_returns_400(self):
         response = PivApiClient().post(Url.POST_EVENT, json_data={"device_id": 1})
-        assert_piv_error(response, 400, PivErrorResponse)
-        assert "title" in response.response_json[0]["message"].lower()
+        assert_piv_error(response, 400, PivErrorResponse, required_fields=("title",))
 
     @pytest.mark.negative
     @allure.epic("PIV")

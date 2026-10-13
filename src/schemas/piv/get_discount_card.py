@@ -11,8 +11,8 @@ class GetDiscountCardItem(StrictResponseModel):
     create_date: StrictStr
     card_type: StrictStr
     is_default: StrictBool
-    end_date: StrictStr
-    start_date: StrictStr
+    end_date: StrictStr | None
+    start_date: StrictStr | None
 
 
 class GetDiscountCardGroup(StrictResponseModel):
